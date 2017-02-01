@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "72417125717",
+    "firebase_url": "https://grossary-577b0.firebaseio.com",
+    "project_id": "grossary-577b0",
+    "storage_bucket": "grossary-577b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72417125717:android:1a13bda59b8a7cee",
+        "android_client_info": {
+          "package_name": "com.pkg.android.grossary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72417125717-ucvq4e988pemk4c0n2f96c3f265b94nl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pkg.android.grossary",
+            "certificate_hash": "2F0A834CFF253CB95B3F6A3699BCBB24DB4B2143"
+          }
+        },
+        {
+          "client_id": "72417125717-a5q7sf68ffuj4rqej38fmcdnqfep11je.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT1AHnO4mYL9VZnZOvM0iy6SAGL3HpHb8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72417125717-a5q7sf68ffuj4rqej38fmcdnqfep11je.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
