@@ -1,4 +1,4 @@
-package com.pkg.android.grossary;
+package com.pkg.android.grossary.model;
 
 import java.util.Date;
 import java.util.UUID;
@@ -8,34 +8,26 @@ import java.util.UUID;
  */
 
 public class Product {
-    private UUID product_id;
+    private int product_id;
     private String product_name;
     private int price;
     private Date expiry_time;
     private int thumbnail;
+    private String product_unit;
 
-    public Product(String product_name, int price, Date expiry_time, int thumbnail, UUID product_id) {
-        this.product_name = product_name;
-        this.price = price;
-        this.expiry_time = expiry_time;
-        this.thumbnail = thumbnail;
-        this.product_id = product_id;
-    }
-
-    public Product(UUID product_id) {
+    public Product(int product_id) {
         this.product_id = product_id;
     }
 
     public Product() {
-        product_id = UUID.randomUUID();
         expiry_time = new Date();
     }
 
-    public UUID getProduct_id() {
+    public int getProduct_id() {
         return product_id;
     }
 
-    public void setProduct_id(UUID product_id) {
+    public void setProduct_id(int product_id) {
         this.product_id = product_id;
     }
 
@@ -70,4 +62,20 @@ public class Product {
     public void setThumbnail(int thumbnail) {
         this.thumbnail = thumbnail;
     }
+
+
+    public String getProduct_unit() {
+        return product_unit;
+    }
+
+    public void setProduct_unit(String product_unit) {
+        this.product_unit = product_unit;
+    }
+
+    @Override
+    public String toString() {
+        return product_name;
+    }
+
+
 }

@@ -5,12 +5,13 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
+        android:name="com.pkg.android.grossary.Cart"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".startScreenActivities.MainActivity">
 
         </activity>
         <activity android:name=".startScreenActivities.SignUpActivity">
@@ -20,6 +21,9 @@
 
         </activity>
         <activity android:name=".CategoryWiseProductListActivity">
+
+        </activity>
+        <activity android:name=".ViewCartActivity">
 
         </activity>
         <activity android:name=".startScreenActivities.LoginActivity" android:label="@string/app_name">

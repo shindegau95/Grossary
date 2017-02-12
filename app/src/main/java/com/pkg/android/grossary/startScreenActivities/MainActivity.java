@@ -1,6 +1,8 @@
-package com.pkg.android.grossary;
+package com.pkg.android.grossary.startScreenActivities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,9 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.navigation.AboutUsFragment;
 import com.pkg.android.grossary.navigation.HistoryFragment;
 import com.pkg.android.grossary.navigation.HomeFragment;
@@ -31,6 +37,7 @@ import com.pkg.android.grossary.startScreenActivities.LoginActivity;
 public class MainActivity extends AppCompatActivity  {
 
 
+    private static final String TAG =  "MainActivity";
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private View navHeader;
@@ -62,12 +69,14 @@ public class MainActivity extends AppCompatActivity  {
     private FirebaseAuth.AuthStateListener authListener;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         auth = FirebaseAuth.getInstance();
+
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -80,6 +89,8 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         };
+
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -215,6 +226,7 @@ public class MainActivity extends AppCompatActivity  {
 
     private void setToolbarTitle() {
         getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+
     }
 
     private void selectNavMenu() {

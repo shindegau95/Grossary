@@ -25,9 +25,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.pkg.android.grossary.MainActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pkg.android.grossary.R;
+import com.pkg.android.grossary.Adapter.UserInfo;
 
 /**
  * Created by GAURAV on 25-01-2017.
@@ -43,6 +49,8 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     private FirebaseAuth auth;
     private GoogleApiClient mGoogleApiClient;
     private SignInButton btnGoogleSignIn;
+    long count;
+    private DatabaseReference dbref;
 
 
     @Override
@@ -53,7 +61,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-
+        dbref = FirebaseDatabase.getInstance().getReference("users");
 
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
@@ -62,6 +70,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
         btnGoogleSignIn = (SignInButton) findViewById(R.id.google_sign_in_button);
+        btnGoogleSignIn.setSize(SignInButton.SIZE_STANDARD);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -76,6 +85,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 signIn();
             }
         });
@@ -119,25 +129,57 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                 progressBar.setVisibility(View.VISIBLE);
                 //create user
 
-                    auth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    Toast.makeText(SignUpActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                    progressBar.setVisibility(View.GONE);
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(SignUpActivity.this, "Registeration failed",
-                                                Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                                        finish();
-                                    }
-                                }
-                            });
+                        auth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        //Toast.makeText(SignUpActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                        // If sign in fails, display a message to the user. If sign in succeeds
+                                        // the auth state listener will be notified and logic to handle the
+                                        // signed in user can be handled in the listener.
+                                        if (!task.isSuccessful()) {
+                                            Toast.makeText(SignUpActivity.this, "Registeration failed",
+                                                    Toast.LENGTH_SHORT).show();
 
+                                        } else {
+                                            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            saveintofirebase(user.getEmail());
+                                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                                            finish();
+                                        }
+                                    }
+                                });
+
+
+
+            }
+        });
+
+
+    }
+
+    private void saveintofirebase(String mail) {
+        final String s = mail;
+
+        dbref.addValueEventListener(new ValueEventListener() {
+            boolean flag = false;
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!flag) {
+                    String uid = auth.getCurrentUser().getUid();
+                    String userId = dbref.push().getKey();
+
+
+                    count = dataSnapshot.getChildrenCount();
+                    flag = true;
+                    UserInfo u = new UserInfo(count + 1, s);
+                    dbref.child(userId).setValue(u);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -179,18 +221,22 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d(TAG, "signInWithCredential:onComplete:"+task.isSuccessful());
+                //Log.d(TAG, "signInWithCredential:onComplete:"+task.isSuccessful());
 
                 if(!task.isSuccessful()){
                     Toast.makeText(SignUpActivity.this , "Authentication failed", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    saveintofirebase(user.getEmail());
                     startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                     finish();
                 }
 
             }
         });
+
+
     }
 
     @Override

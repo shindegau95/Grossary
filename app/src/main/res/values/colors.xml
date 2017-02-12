@@ -7,7 +7,7 @@
     <color name="bg_login">#26ae90</color>
     <color name="bg_register">#2e3237</color>
     <color name="bg_main">#428bca</color>
-    <color name="white">#ffffff</color>
+
     <color name="input_login">#222222</color>
     <color name="input_login_hint">#999999</color>
     <color name="input_register">#888888</color>
@@ -20,4 +20,23 @@
 
     <color name="viewBg">#f1f5f8</color>
     <color name="album_title">#4c4c4c</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="amber">#FFC107</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+    <color name="brown">#795548</color>
+    <color name="violet">#9C27B0</color>
+    <color name="orange">#FF9800</color>
+
+
+    <color name="dark_amber">#FFA000</color>
+    <color name="dark_green">#388E3C</color>
+    <color name="dark_red">#d32f2f</color>
+    <color name="dark_brown">#5D4037</color>
+    <color name="dark_violet">#7B1FA2</color>
+    <color name="dark_orange">#F57C00</color>
+
+    <color name="accent_amber">#FFB74D</color>
 </resources>
