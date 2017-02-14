@@ -27,7 +27,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.pkg.android.grossary.CategoryWiseProductListActivity;
 import com.pkg.android.grossary.R;
+import com.pkg.android.grossary.ViewCartActivity;
 import com.pkg.android.grossary.navigation.AboutUsFragment;
 import com.pkg.android.grossary.navigation.HistoryFragment;
 import com.pkg.android.grossary.navigation.HomeFragment;
@@ -114,8 +116,8 @@ public class MainActivity extends AppCompatActivity  {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(MainActivity.this, ViewCartActivity.class);
+                startActivity(i);
             }
         });
 
@@ -351,6 +353,10 @@ public class MainActivity extends AppCompatActivity  {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
+            Intent i = getBaseContext().getPackageManager()
+                    .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
             signOut();
             return true;
         }

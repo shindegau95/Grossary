@@ -35,8 +35,8 @@ public class OthersLab {
 
     }
 
-    public static OthersLab get(Context context) {
-        if(sOthersLab == null){
+    public static OthersLab get(Context context, boolean noItems) {
+        if(sOthersLab == null || noItems){
             sOthersLab = new OthersLab(context);
         }
         return sOthersLab;

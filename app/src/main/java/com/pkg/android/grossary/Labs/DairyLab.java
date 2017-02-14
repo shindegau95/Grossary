@@ -35,8 +35,8 @@ public class DairyLab {
 
     }
 
-    public static DairyLab get(Context context) {
-        if(sDairyLab == null){
+    public static DairyLab get(Context context, boolean noItems) {
+        if(sDairyLab == null || noItems){
             sDairyLab = new DairyLab(context);
         }
         return sDairyLab;

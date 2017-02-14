@@ -3,6 +3,7 @@ package com.pkg.android.grossary.Labs;
 import android.content.Context;
 
 import com.pkg.android.grossary.CSVReader;
+import com.pkg.android.grossary.Cart;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.model.Product;
 
@@ -35,8 +36,8 @@ public class CerealLab {
 
     }
 
-    public static CerealLab get(Context context) {
-        if(sCerealLab == null){
+    public static CerealLab get(Context context, boolean noItems) {
+        if(sCerealLab == null || noItems){
             sCerealLab = new CerealLab(context);
         }
         return sCerealLab;

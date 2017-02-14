@@ -36,8 +36,8 @@ public class FruitsLab {
 
     }
 
-    public static FruitsLab get(Context context) {
-        if(sFruitsLab == null){
+    public static FruitsLab get(Context context, boolean noItems) {
+        if(sFruitsLab == null || noItems){
             sFruitsLab = new FruitsLab(context);
         }
         return sFruitsLab;

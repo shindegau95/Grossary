@@ -7,6 +7,7 @@ import android.util.Log;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.model.Product;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class Cart extends Application {
 
     private static final String TAG = "Cart";
     private List<CartItem> mCart;
+
 
     public List<CartItem> getCart()
     {
@@ -44,4 +46,5 @@ public class Cart extends Application {
             mCart.remove(item);
         }
     }
+
 }

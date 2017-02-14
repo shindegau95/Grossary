@@ -35,8 +35,8 @@ public class DryFruitsLab {
 
     }
 
-    public static DryFruitsLab get(Context context) {
-        if(sDryFruitsLab == null){
+    public static DryFruitsLab get(Context context, boolean noItems) {
+        if(sDryFruitsLab == null || noItems){
             sDryFruitsLab = new DryFruitsLab(context);
         }
         return sDryFruitsLab;

@@ -2,7 +2,6 @@ package com.pkg.android.grossary;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
@@ -17,7 +16,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,10 +28,8 @@ import com.pkg.android.grossary.Labs.DairyLab;
 import com.pkg.android.grossary.Labs.DryFruitsLab;
 import com.pkg.android.grossary.Labs.FruitsLab;
 import com.pkg.android.grossary.Labs.OthersLab;
-import com.pkg.android.grossary.Labs.ShoppingListLab;
 import com.pkg.android.grossary.Labs.VegetablesLab;
 import com.pkg.android.grossary.model.CartItem;
-import com.pkg.android.grossary.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,29 +103,34 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     }
 
     private void prepareProducts() {
+        boolean noItems = false;
+        Cart shoppingCart = (Cart)getApplicationContext();
+        if(shoppingCart.getCart().size() == 0){
+            noItems = true;
+        }
 
         if(category==1) {
-            CerealLab c = CerealLab.get(this);
+            CerealLab c = CerealLab.get(this,noItems);
             mCartItemList = c.getCartItemList();
         }
         else if(category==2) {
-            DairyLab d = DairyLab.get(this);
+            DairyLab d = DairyLab.get(this,noItems);
             mCartItemList = d.getCartItemList();
         }
         else if(category==3) {
-            FruitsLab f = FruitsLab.get(this);
+            FruitsLab f = FruitsLab.get(this,noItems);
             mCartItemList = f.getCartItemList();
         }
         else if(category==4) {
-            VegetablesLab v = VegetablesLab.get(this);
+            VegetablesLab v = VegetablesLab.get(this,noItems);
             mCartItemList = v.getCartItemList();
         }
         else if(category==5) {
-            DryFruitsLab d = DryFruitsLab.get(this);
+            DryFruitsLab d = DryFruitsLab.get(this,noItems);
             mCartItemList = d.getCartItemList();
         }
         else if(category==6) {
-            OthersLab o = OthersLab.get(this);
+            OthersLab o = OthersLab.get(this,noItems);
             mCartItemList = o.getCartItemList();
         }
         /*else {

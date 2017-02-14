@@ -1,20 +1,21 @@
 package com.pkg.android.grossary;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.pkg.android.grossary.Adapter.CartItemAdapter;
-import com.pkg.android.grossary.Labs.CerealLab;
-import com.pkg.android.grossary.Labs.ShoppingCartLab;
-import com.pkg.android.grossary.Labs.VegetablesLab;
 import com.pkg.android.grossary.model.CartItem;
-import com.pkg.android.grossary.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +29,46 @@ public class ViewCartActivity extends AppCompatActivity {
     private List<CartItem> cart;
     private RecyclerView mRecyclerView;
     private CartItemAdapter mAdapter;
+    private Toolbar toolbar;
+    private int total;
+    private TextView totalprice;
+    private AppCompatButton checkout;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_cart);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
+        totalprice = (TextView) findViewById(R.id.cart_total_price);
+        checkout = (AppCompatButton)findViewById(R.id.checkout);
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Cart shoppingCart = (Cart)getApplicationContext();
+                shoppingCart.setCartItemItems(null);
+                Intent i = getBaseContext().getPackageManager()
+                        .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            }
+        });
 
         cart = new ArrayList<>();
         updateUI();
+
+        if(total>0)
+            totalprice.setText(String.valueOf(total));
+        else
+            setContentView(R.layout.activity_no_items_in_cart);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.green));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.dark_green));
+        toolbar.setTitle("Cart");
+        setSupportActionBar(toolbar);
     }
 
     private void updateUI() {
@@ -52,6 +80,8 @@ public class ViewCartActivity extends AppCompatActivity {
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+
             mRecyclerView.setAdapter(mAdapter);
         }else {
             mAdapter.notifyDataSetChanged();
@@ -65,6 +95,10 @@ public class ViewCartActivity extends AppCompatActivity {
         Cart shoppingCart = (Cart)getApplicationContext();
 
         cart = shoppingCart.getCart();
+        total = 0;
+        for(CartItem c : cart){
+            total += c.getCartquantity()*c.getCartItem().getPrice();
+        }
         /*for(CartItem c : shoppingCart.getCart()){
             cart.add(c);
         }
