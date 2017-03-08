@@ -1,5 +1,6 @@
 package com.pkg.android.grossary;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,11 +12,18 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pkg.android.grossary.Adapter.CartItemAdapter;
+import com.pkg.android.grossary.ConnectionPackage.ASyncResponse;
+import com.pkg.android.grossary.ConnectionPackage.Connection;
 import com.pkg.android.grossary.model.CartItem;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +41,7 @@ public class ViewCartActivity extends AppCompatActivity {
     private int total;
     private TextView totalprice;
     private AppCompatButton checkout;
-
+    private JSONObject j;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -52,6 +60,17 @@ public class ViewCartActivity extends AppCompatActivity {
                 Intent i = getBaseContext().getPackageManager()
                         .getLaunchIntentForPackage( getBaseContext().getPackageName() );
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Context context=getApplicationContext();
+                ASyncResponse a=new ASyncResponse() {
+                    @Override
+                    public void processFinish(String output) {
+                        Log.e("param", output);
+                        Toast.makeText(ViewCartActivity.this, output, Toast.LENGTH_LONG).show();
+                    }
+                };
+                Connection c=new Connection("http://192.168.0.103/index1.php",context);
+                String q=j.toString();
+                c.onPost(q, a);
                 startActivity(i);
             }
         });
@@ -96,9 +115,16 @@ public class ViewCartActivity extends AppCompatActivity {
 
         cart = shoppingCart.getCart();
         total = 0;
+        j=new JSONObject();
         for(CartItem c : cart){
             total += c.getCartquantity()*c.getCartItem().getPrice();
+            try {
+                j.put(String.valueOf(c.getCartItem().getProduct_id()),c.getCartquantity());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+        Log.e(TAG, "String="+j.toString());
         /*for(CartItem c : shoppingCart.getCart()){
             cart.add(c);
         }
