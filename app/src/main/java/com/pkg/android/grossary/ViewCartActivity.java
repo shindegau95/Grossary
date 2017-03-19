@@ -71,7 +71,7 @@ public class ViewCartActivity extends AppCompatActivity {
                 };
                 Connection c=new Connection("https://104.198.113.225/index1.php",context);  //For personalized recommendation,the php file is index.php
                 // Make sure you change the url accordingly
-                String q=j.toString();
+                String q=j.toString();   // String 'q' will be the id of the customer
                 c.onPost(q, a);
                 // 'Connection to the server' code ends here
                 startActivity(i);
