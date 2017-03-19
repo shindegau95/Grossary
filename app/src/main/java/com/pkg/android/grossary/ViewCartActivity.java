@@ -60,17 +60,20 @@ public class ViewCartActivity extends AppCompatActivity {
                 Intent i = getBaseContext().getPackageManager()
                         .getLaunchIntentForPackage( getBaseContext().getPackageName() );
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // Call to the server starts from here. Start copying the code from here
                 Context context=getApplicationContext();
                 ASyncResponse a=new ASyncResponse() {
                     @Override
-                    public void processFinish(String output) {
+                    public void processFinish(String output) {   // Server will return the output & store it in the string variable 'output'
                         Log.e("param", output);
                         Toast.makeText(ViewCartActivity.this, output, Toast.LENGTH_LONG).show();
                     }
                 };
-                Connection c=new Connection("http://192.168.0.103/index1.php",context);
+                Connection c=new Connection("https://104.198.113.225/index1.php",context);  //For personalized recommendation,the php file is index.php
+                // Make sure you change the url accordingly
                 String q=j.toString();
                 c.onPost(q, a);
+                // 'Connection to the server' code ends here
                 startActivity(i);
             }
         });
