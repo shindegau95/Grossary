@@ -22,7 +22,7 @@ public class Connection {
     Context context;
     StringRequest stringRequest;
 
-    Connection(String url, Context context) {
+    public Connection(String url, Context context) {
         this.url = url;
         this.context = context;
     }
