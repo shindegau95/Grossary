@@ -1,8 +1,6 @@
 package com.pkg.android.grossary.Adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,12 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.pkg.android.grossary.Cart;
+import com.pkg.android.grossary.Applications.GrossaryApplication;
+import com.pkg.android.grossary.Labs.ShoppingListLab;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.model.Product;
+import com.pkg.android.grossary.other.Parser;
+import com.pkg.android.grossary.other.Session;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
 
     private Context mContext;
     private List<CartItem> mCartItemProductList;
-    private Cart ShoppingCart;
+    private GrossaryApplication ShoppingCart;
 
     private String TAG = "CustomerAct";
     @Override
@@ -40,13 +42,14 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
     }
 
     @Override
-    public void onBindViewHolder(final ProductViewHolder holder, int position) {
+    public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         final CartItem item = mCartItemProductList.get(position);
         Log.d(TAG, String.valueOf(item.getCartItem()));
         holder.product_name.setText(((Product)item.getCartItem()).getProduct_name());
         holder.price.setText(item.getCartItem().getPrice() + "/" + item.getCartItem().getProduct_unit());
         holder.productquantity.setText(String.valueOf(item.getCartquantity()));
 
+        //remember that list starts from 0 and id from 1
         holder.productplus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,6 +57,8 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
                 if(item.getCartquantity()>0){
                     ShoppingCart.addToCart(item);
                 }
+                disableInShoppingList(position+1);  //vvip step
+
             }
         });
 
@@ -64,9 +69,18 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
                     holder.productquantity.setText(String.valueOf(item.decrementqty()));
                     ShoppingCart.removeFromCart(item);
                 }
+                disableInShoppingList(position+1);  //vvip step
             }
         });
         Glide.with(mContext).load(item.getCartItem().getThumbnail()).into(holder.thumbnail);
+
+    }
+
+    private void disableInShoppingList(int id) {
+        ShoppingListLab s = ShoppingListLab.get(mContext);
+
+
+        s.DisableItem(id);
 
     }
 
@@ -99,7 +113,7 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
         }
     }
 
-    public CustomerCategoryProductAdapter(Context context, List<CartItem> cartItemList, Cart ShoppingCart) {
+    public CustomerCategoryProductAdapter(Context context, List<CartItem> cartItemList, GrossaryApplication ShoppingCart) {
         mContext = context;
         mCartItemProductList = cartItemList;
         this.ShoppingCart = ShoppingCart;

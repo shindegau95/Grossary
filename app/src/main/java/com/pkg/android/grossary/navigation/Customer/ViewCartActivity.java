@@ -1,5 +1,7 @@
-package com.pkg.android.grossary;
+package com.pkg.android.grossary.navigation.Customer;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,11 +13,26 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.pkg.android.grossary.Adapter.CartItemAdapter;
+import com.pkg.android.grossary.Applications.GrossaryApplication;
+import com.pkg.android.grossary.ConnectionPackage.ASyncResponse;
+import com.pkg.android.grossary.ConnectionPackage.Connection;
+import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
+import com.pkg.android.grossary.other.CallServer;
+import com.pkg.android.grossary.other.DividerItemDecoration;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +41,13 @@ import java.util.List;
  * Created by GAURAV on 10-02-2017.
  */
 
+/*
+    This is the final cart after adding items to cart
+    displays all the products wwith their price and quantity
+    displays total price
+ */
 public class ViewCartActivity extends AppCompatActivity {
-    private static final String TAG = "Cart";
+    private static final String TAG = "GrossaryApplication";
     private List<CartItem> cart;
     private RecyclerView mRecyclerView;
     private CartItemAdapter mAdapter;
@@ -33,7 +55,8 @@ public class ViewCartActivity extends AppCompatActivity {
     private int total;
     private TextView totalprice;
     private AppCompatButton checkout;
-
+    private DatabaseReference dbref;
+    private JSONObject jsonprodlist;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -41,18 +64,15 @@ public class ViewCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_cart);
 
+        //wiring
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         totalprice = (TextView) findViewById(R.id.cart_total_price);
         checkout = (AppCompatButton)findViewById(R.id.checkout);
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Cart shoppingCart = (Cart)getApplicationContext();
-                shoppingCart.setCartItemItems(null);
-                Intent i = getBaseContext().getPackageManager()
-                        .getLaunchIntentForPackage( getBaseContext().getPackageName() );
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
+                CallServer.updateShoppingList(ViewCartActivity.this);
+                CallServer.checkout(ViewCartActivity.this, jsonprodlist);
             }
         });
 
@@ -67,12 +87,13 @@ public class ViewCartActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(getResources().getColor(R.color.green));
         getWindow().setStatusBarColor(getResources().getColor(R.color.dark_green));
-        toolbar.setTitle("Cart");
+        toolbar.setTitle("GrossaryApplication");
         setSupportActionBar(toolbar);
     }
 
     private void updateUI() {
         prepareCart();
+
 
         if(mAdapter == null)
         {
@@ -92,13 +113,20 @@ public class ViewCartActivity extends AppCompatActivity {
 
 
     private void prepareCart() {
-        Cart shoppingCart = (Cart)getApplicationContext();
+        GrossaryApplication shoppingCart = (GrossaryApplication)getApplicationContext();
 
         cart = shoppingCart.getCart();
         total = 0;
+        jsonprodlist=new JSONObject();
         for(CartItem c : cart){
             total += c.getCartquantity()*c.getCartItem().getPrice();
+            try {
+                jsonprodlist.put(String.valueOf(c.getCartItem().getProduct_id()),c.getCartquantity());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+        Log.d(TAG, "String="+jsonprodlist.toString());
         /*for(CartItem c : shoppingCart.getCart()){
             cart.add(c);
         }

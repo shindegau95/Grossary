@@ -14,6 +14,7 @@ public class Product {
     private Date expiry_time;
     private int thumbnail;
     private String product_unit;
+    private int category_id;
 
     public Product(int product_id) {
         this.product_id = product_id;
@@ -63,13 +64,20 @@ public class Product {
         this.thumbnail = thumbnail;
     }
 
-
     public String getProduct_unit() {
         return product_unit;
     }
 
     public void setProduct_unit(String product_unit) {
         this.product_unit = product_unit;
+    }
+
+    public int getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(int category_id) {
+        this.category_id = category_id;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.pkg.android.grossary;
+package com.pkg.android.grossary.other;
 
 import android.content.Context;
 import android.content.res.TypedArray;

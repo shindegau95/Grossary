@@ -1,22 +1,19 @@
-package com.pkg.android.grossary.startScreenActivities;
+package com.pkg.android.grossary.navigation.Retailer;
+
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,21 +22,18 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.pkg.android.grossary.CategoryWiseProductListActivity;
 import com.pkg.android.grossary.R;
-import com.pkg.android.grossary.ViewCartActivity;
+import com.pkg.android.grossary.navigation.Customer.ViewCartActivity;
 import com.pkg.android.grossary.navigation.AboutUsFragment;
-import com.pkg.android.grossary.navigation.HistoryFragment;
-import com.pkg.android.grossary.navigation.HomeFragment;
-import com.pkg.android.grossary.navigation.SettingsFragment;
 import com.pkg.android.grossary.startScreenActivities.LoginActivity;
 
-public class MainActivity extends AppCompatActivity  {
+/**
+ * Created by GAURAV on 06-03-2017.
+ */
+public class RetailerMainActivity extends AppCompatActivity  {
 
 
-    private static final String TAG =  "MainActivity";
+    private static final String TAG =  "RetailerMainActivity";
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private View navHeader;
@@ -75,7 +69,7 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_retailer_main);
 
         auth = FirebaseAuth.getInstance();
 
@@ -116,7 +110,7 @@ public class MainActivity extends AppCompatActivity  {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ViewCartActivity.class);
+                Intent i = new Intent(RetailerMainActivity.this, ViewCartActivity.class);
                 startActivity(i);
             }
         });
@@ -206,23 +200,23 @@ public class MainActivity extends AppCompatActivity  {
         switch (navItemIndex) {
             case 0:
                 // home
-                HomeFragment homeFragment = new HomeFragment();
-                return homeFragment;
+                RetailerHomeFragment retailerHomeFragment = new RetailerHomeFragment();
+                return retailerHomeFragment;
             case 1:
                 // notifications fragment
-                HistoryFragment notificationsFragment = new HistoryFragment();
+                RetailerHistoryFragment notificationsFragment = new RetailerHistoryFragment();
                 return notificationsFragment;
 
             case 2:
                 // settings fragment
-                SettingsFragment settingsFragment = new SettingsFragment();
-                return settingsFragment;
+                RetailerSettingsFragment retailerSettingsFragment = new RetailerSettingsFragment();
+                return retailerSettingsFragment;
             case 3:
                 // settings fragment
                 AboutUsFragment aboutUsFragment= new AboutUsFragment();
                 return aboutUsFragment;
             default:
-                return new HomeFragment();
+                return new RetailerHomeFragment();
         }
     }
 
@@ -391,8 +385,6 @@ public class MainActivity extends AppCompatActivity  {
             auth.removeAuthStateListener(authListener);
         }
     }
-
-
 
 
 }

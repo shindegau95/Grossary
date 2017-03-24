@@ -1,4 +1,4 @@
-package com.pkg.android.grossary.navigation;
+package com.pkg.android.grossary.navigation.Customer;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import com.pkg.android.grossary.R;
 
 /**
- * Created by GAURAV on 30-01-2017.
+ * Created by GAURAV on 31-01-2017.
  */
-
-public class HistoryFragment extends Fragment {
-    public HistoryFragment() {
+public class CustomerSettingsFragment extends Fragment {
+    public CustomerSettingsFragment() {
     }
 
     @Override
@@ -26,7 +25,7 @@ public class HistoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_customer_settings, container, false);
         return rootView;
     }
 

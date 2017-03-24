@@ -1,4 +1,4 @@
-package com.pkg.android.grossary.navigation;
+package com.pkg.android.grossary.navigation.Retailer;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import com.pkg.android.grossary.R;
 /**
  * Created by GAURAV on 31-01-2017.
  */
-public class SettingsFragment extends Fragment {
-    public SettingsFragment() {
+public class RetailerSettingsFragment extends Fragment {
+    public RetailerSettingsFragment() {
     }
 
     @Override
@@ -25,7 +25,7 @@ public class SettingsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_retailer_settings, container, false);
         return rootView;
     }
 

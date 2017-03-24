@@ -6,8 +6,8 @@
                 android:layout_height="match_parent"
                 android:background="@color/viewBg"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:context=".startScreenActivities.MainActivity"
-                tools:showIn="@layout/activity_main">
+                tools:context=".navigation.Customer.CustomerMainActivity"
+                tools:showIn="@layout/activity_customer_main">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

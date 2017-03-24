@@ -1,4 +1,4 @@
-package com.pkg.android.grossary.navigation;
+package com.pkg.android.grossary.other;
 
 import android.content.Context;
 import android.graphics.Bitmap;
