@@ -16,6 +16,7 @@ public class Product {
     private String product_unit;
     private int category_id;
 
+    //constructors
     public Product(int product_id) {
         this.product_id = product_id;
     }
@@ -24,6 +25,7 @@ public class Product {
         expiry_time = new Date();
     }
 
+    //getters and setters
     public int getProduct_id() {
         return product_id;
     }
@@ -80,6 +82,7 @@ public class Product {
         this.category_id = category_id;
     }
 
+    //toString
     @Override
     public String toString() {
         return product_name;

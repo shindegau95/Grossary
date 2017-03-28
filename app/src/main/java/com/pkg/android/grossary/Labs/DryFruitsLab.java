@@ -49,7 +49,11 @@ public class DryFruitsLab {
             if(getCartItemList().get(j).getCartItem().getProduct_id() == id) {//check the id
                 GrossaryApplication ShoppingCart = GrossaryApplication.getInstance();
                 getCartItemList().get(j).setCartquantity(qty);
-                ShoppingCart.addToCart(getCartItemList().get(j));
+                if(qty == 0){
+                    ShoppingCart.removeFromCart(getCartItemList().get(j));
+                }else{
+                    ShoppingCart.addToCart(getCartItemList().get(j));
+                }
                 break;
             }
         }

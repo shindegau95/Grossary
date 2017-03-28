@@ -12,15 +12,19 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.pkg.android.grossary.Adapter.CustomerCategoryProductAdapter;
@@ -54,6 +58,8 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private List<CartItem> mCartItemList;
     private FloatingActionButton cartfab;
+    private ButtonBarLayout bottomButton;
+    private ToggleButton selectButton;
     boolean noShoppingListItems = false;
     private static final String EXTRA_CHOICE = "com.pkg.android.grossary.choice";
     private List<Boolean> selectedList;
@@ -96,13 +102,17 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
 
             //wiring
 
+            bottomButton = (ButtonBarLayout)findViewById(R.id.bottom_button);
+            selectButton = (ToggleButton) findViewById(R.id.selectButton);
             cartfab = (FloatingActionButton)findViewById(R.id.fab);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             initCollapsingToolbar();
 
-
+            bottomButton.setVisibility(View.GONE);
+            selectButton.setVisibility(View.GONE);
+            //hides the select Button by default
 
             mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -112,8 +122,32 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
             prepareSelectedList();
 
             final GrossaryApplication shoppingCart = (GrossaryApplication) getApplicationContext();
-            if(category == 0)
-                mAdapter = new ShoppingListAdapter(this, mCartItemList,selectedList, shoppingCart);
+            if(category == 0) {
+                mAdapter = new ShoppingListAdapter(this, mCartItemList, selectedList, shoppingCart);
+                bottomButton.setVisibility(View.VISIBLE);
+                selectButton.setVisibility(View.VISIBLE);
+                ShoppingListLab s = ShoppingListLab.get(getApplicationContext());
+                selectButton.setChecked(s.isAllSelected());
+                selectButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                        ShoppingListLab s = ShoppingListLab.get(getApplicationContext());
+                        if(checked){
+                            s.EnableAllItems();
+                            for(CartItem ci: s.getCartItemList()){
+                                ShoppingListAdapter.setLabQuantity(ci, ci.getCartItem().getProduct_id(), ci.getCartquantity(), getApplicationContext());
+                            }
+                            mAdapter.notifyDataSetChanged();
+                        }else{
+                            s.DisableAllItems();
+                            for(CartItem ci: s.getCartItemList()){
+                                ShoppingListAdapter.setLabQuantity(ci, ci.getCartItem().getProduct_id(), 0, getApplicationContext());
+                            }
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
             else
                 mAdapter = new CustomerCategoryProductAdapter(this, mCartItemList, shoppingCart);
 
@@ -132,6 +166,7 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
                     startActivity(i);
                 }
             });
+
 
 
             try {

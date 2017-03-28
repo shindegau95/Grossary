@@ -16,8 +16,11 @@ import com.pkg.android.grossary.Adapter.RetailListParent;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.Labs.RetailLab;
 import com.pkg.android.grossary.R;
+import com.pkg.android.grossary.other.DividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,6 +50,7 @@ public class RetailerHomeFragment extends Fragment{
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         GrossaryApplication g = (GrossaryApplication)getActivity().getApplicationContext();
         RetailExpandableAdapter retailExpandableAdapter = new RetailExpandableAdapter(getActivity(), generateRetailList(),g);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         mRecyclerView.setAdapter(retailExpandableAdapter);
         return rootView;
     }
@@ -56,12 +60,13 @@ public class RetailerHomeFragment extends Fragment{
         List<RetailListParent> retail = retailLab.getCartItemList();
         ArrayList<RetailListParent> parentObjects = new ArrayList<>();
         for (RetailListParent retailListParent : retail) {
-            ArrayList<Object> childList = new ArrayList<>();
+            ArrayList<RetailList> childList = new ArrayList<>();
             //child list initialization
-            childList.add(new RetailList(retailListParent.getCartquantity(), retailListParent.getCartquantity() * retailListParent.getCartItem().getPrice()));
-            retailListParent.setChildObjectList(childList);
+            childList.add(new RetailList(retailListParent.getActual_stock(), retailListParent.getProduct().getPrice()));
+            retailListParent.setChildList(childList);
             parentObjects.add(retailListParent);
         }
+        Collections.sort(parentObjects);
         return parentObjects;
 
     }

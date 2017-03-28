@@ -82,9 +82,9 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             public void onClick(View view) {
                 int prd_id = item.getCartItem().getProduct_id();
                 int prd_qty = item.incrementqty();
-                setLabQuantity(item, prd_id, prd_qty);
+                setLabQuantity(item, prd_id, prd_qty, mContext);
                 holder.productquantity.setText(String.valueOf(prd_qty));
-                
+
             }
         });
 
@@ -93,7 +93,13 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             public void onClick(View view) {
                 int prd_id = item.getCartItem().getProduct_id();
                 int prd_qty = item.decrementqty();
-                setLabQuantity(item, prd_id, prd_qty);
+
+                if(prd_qty == 0){
+                    toggle(holder, false);
+                    deselect(holder, item, position);
+                }else {
+                    setLabQuantity(item, prd_id, prd_qty, mContext);
+                }
                 holder.productquantity.setText(String.valueOf(prd_qty));
             }
         });
@@ -124,7 +130,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         int prd_id = item.getCartItem().getProduct_id();
         int prd_qty = 0;
-        setLabQuantity(item, prd_id, prd_qty);
+        setLabQuantity(item, prd_id, prd_qty, mContext);
 
         ShoppingListLab s = ShoppingListLab.get(mContext);
         s.DisableItemAtPosition(position);
@@ -134,13 +140,13 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         int prd_id = item.getCartItem().getProduct_id();
         int prd_qty = Integer.parseInt(String.valueOf(holder.productquantity.getText()));
-        setLabQuantity(item, prd_id, prd_qty);
+        setLabQuantity(item, prd_id, prd_qty, mContext);
 
         ShoppingListLab s = ShoppingListLab.get(mContext);
         s.EnableItemAtPosition(position);
     }
 
-    private void setLabQuantity(CartItem item,int prd_id, int prd_qty) {
+    public static void setLabQuantity(CartItem item,int prd_id, int prd_qty, Context mContext) {
         switch(item.getCartItem().getCategory_id()){
             case 1: CerealLab c = CerealLab.get(mContext, false);
                 c.setRecommendedQuantity(prd_id,prd_qty);

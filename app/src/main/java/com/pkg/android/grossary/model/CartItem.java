@@ -2,6 +2,8 @@ package com.pkg.android.grossary.model;
 
 import android.content.SharedPreferences;
 
+import com.pkg.android.grossary.Adapter.RetailListParent;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -17,10 +19,13 @@ public class CartItem {
         cartquantity = 0;
     }
 
+    public CartItem(Product p, int cartquantity) {
+        cartItem = p;
+        this.cartquantity = cartquantity;
+    }
 
     public void setCartItem(Product cartItem) {
         this.cartItem = cartItem;
-        cartquantity = 0;
     }
 
     public Product getCartItem() {

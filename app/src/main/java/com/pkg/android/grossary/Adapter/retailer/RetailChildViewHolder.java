@@ -15,16 +15,16 @@ import com.pkg.android.grossary.R;
 public class RetailChildViewHolder extends ChildViewHolder {
 
     public EditText mProductQuantity;
-    public ImageButton AddProduct;
-    public ImageButton RemoveProduct;
+    public ImageButton Plus;
+    public ImageButton Minus;
     public TextView mTotalPrice;
 
     public RetailChildViewHolder(View itemView) {
         super(itemView);
 
         mProductQuantity = (EditText)itemView.findViewById(R.id.product_quantity);
-        AddProduct = (ImageButton)itemView.findViewById(R.id.product_plus);
-        RemoveProduct = (ImageButton)itemView.findViewById(R.id.product_minus);
+        Plus = (ImageButton)itemView.findViewById(R.id.product_plus);
+        Minus = (ImageButton)itemView.findViewById(R.id.product_minus);
         mTotalPrice = (TextView)itemView.findViewById(R.id.total_price);
     }
 }

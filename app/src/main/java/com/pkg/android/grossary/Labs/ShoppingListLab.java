@@ -21,6 +21,7 @@ public class ShoppingListLab {
 
     private List<CartItem> itemList;
     private List<Boolean> selectedList;
+    private boolean allSelected;
 
     public List<CartItem> getCartItemList() {
         return itemList;
@@ -85,11 +86,44 @@ public class ShoppingListLab {
     }
     public void EnableItemAtPosition(int position){
         selectedList.set(position,true);
+        checkSelected();
     }
 
     public void DisableItemAtPosition(int position){
         selectedList.set(position,false);
+        checkSelected();
     }
 
+    public void EnableAllItems(){
+        for(int i=0;i<getCartItemList().size();i++){
+            EnableItemAtPosition(i);
+        }
+        setAllSelected(true);
+    }
 
+    public void DisableAllItems(){
+        for(int i=0;i<getCartItemList().size();i++){
+            DisableItemAtPosition(i);
+        }
+        setAllSelected(false);
+    }
+
+    public boolean isAllSelected() {
+        return allSelected;
+    }
+
+    public void setAllSelected(boolean allSelected) {
+        this.allSelected = allSelected;
+    }
+
+    public void checkSelected(){
+        boolean flag = true;
+        for(int i=0;i<getCartItemList().size();i++){
+            if(getSelectedList().get(i)==false){
+                flag=false;
+                break;
+            }
+        }
+        setAllSelected(flag);
+    }
 }

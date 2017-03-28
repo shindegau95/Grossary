@@ -5,9 +5,16 @@ import android.util.Log;
 
 import com.pkg.android.grossary.Adapter.RetailList;
 import com.pkg.android.grossary.Adapter.RetailListParent;
+import com.pkg.android.grossary.Labs.CerealLab;
+import com.pkg.android.grossary.Labs.DairyLab;
+import com.pkg.android.grossary.Labs.DryFruitsLab;
+import com.pkg.android.grossary.Labs.FruitsLab;
+import com.pkg.android.grossary.Labs.OthersLab;
+import com.pkg.android.grossary.Labs.VegetablesLab;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.model.Product;
+import com.pkg.android.grossary.model.Recipe;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +52,7 @@ public class CSVReader {
     }
 
     public static ArrayList<RetailListParent> setProductQuantities(Context context, ArrayList<RetailListParent> resultList){
-        InputStream inputStream = context.getResources().openRawResource(R.raw.priceindex);
+        InputStream inputStream = context.getResources().openRawResource(R.raw.retailquantity);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         int count;
@@ -63,8 +70,17 @@ public class CSVReader {
                     String[] rowelement = line.split(",");
                     for (int i=1;i<count;i++){
                         Log.d(TAG, rowelement[i]);
-                        ((RetailListParent)resultList.get(i-1)).setCartquantity(Integer.parseInt(rowelement[i]));
+                        ((RetailListParent)resultList.get(i-1)).setCurrent_stock(Integer.parseInt(rowelement[i]));
 
+                    }
+                }
+                if(linecount==1){
+                    String[] rowelement = line.split(",");
+                    for (int i=1;i<count;i++){
+                        Log.d(TAG, rowelement[i]);
+                        ((RetailListParent)resultList.get(i-1)).setExpected_stock(Integer.parseInt(rowelement[i]));
+                        ((RetailListParent)resultList.get(i-1)).updateActualStock(10,20,800);
+                        //here 10 = days past, 20 = days left, 800 = previous_stock
                     }
                 }
                 linecount++;
@@ -95,6 +111,7 @@ public class CSVReader {
         int count;
         try {
             count = 0 ;
+            //read the first line
             String[] csvLine = reader.readLine().split(",");
             for (String s : csvLine) {
                 count++;
@@ -112,7 +129,7 @@ public class CSVReader {
                 if(linecount==1){
                     String[] rowelement = line.split(",");
                     for (int i=1;i<count;i++){
-                        Log.d(TAG, rowelement[i]);
+                        Log.d(TAG, "id = "+rowelement[i]);
                         ((Product)resultList.get(i-1)).setProduct_id(Integer.parseInt(rowelement[i]));
 
                     }
@@ -256,6 +273,124 @@ public class CSVReader {
 
     }
 
+    public static ArrayList<Recipe> readRecipeList(Context context){
+        InputStream inputStream = context.getResources().openRawResource(R.raw.recipe);
+
+        //get all cartItems
+        List<CartItem> allCartitems = getAllCartItems(context, getAllProducts(context));
+
+        List<Recipe> resultList = new ArrayList();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
 
+        int count = 0;
+        try {
+            String line;
+            int linecount = 0;
+            while ((line = reader.readLine()) != null) {
+                if(linecount>1){ //product id
+                    count = 0;
+                    String[] rowelement = line.split(",");
+                    Recipe r = new Recipe();
+                    r.setRecipe_id(linecount-1);
+                    for (String s :rowelement){
+                        if(count == 0){
+                            //read first column
+                            r.setRecipe_name(s);
+                            r.setThumbnail(context.getResources().getIdentifier(s.toLowerCase().replace(" ",""),"raw",context.getPackageName()));
+                        }else{
+                            if(Integer.parseInt(s) == 1){
+                                r.getIngredients().add(allCartitems.get(count-1));
+                            }
+                        }
+
+                        count++;
+                    }
+                    resultList.add(r);
+                }
+
+                linecount++;
+            }
+
+        }
+        catch (IOException ex) {
+            throw new RuntimeException("Error in reading CSV file: "+ex);
+        }
+        finally {
+            try {
+                inputStream.close();
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Error while closing input stream: "+e);
+            }
+        }
+
+
+        return (ArrayList<Recipe>) resultList;
+
+    }
+
+    private static List<CartItem> getAllCartItems(Context context, List<Product> allProducts) {
+        List<CartItem> allCartitems = new ArrayList<>();
+        for(Product p : allProducts){//for all products
+            switch(p.getCategory_id()){//check category id
+
+                case 1: CerealLab c = CerealLab.get(context, false);                    //get lab instance
+                    for(CartItem ci : c.getCartItemList()){                             //search trhought that lab
+                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                            allCartitems.add(ci);                                       //add it to all cart items
+                            break;
+                        }
+                    }
+                    break;
+
+                case 2: DairyLab dr = DairyLab.get(context, false);
+                    for(CartItem ci : dr.getCartItemList()){                             //search trhought that lab
+                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                            allCartitems.add(ci);                                       //add it to all cart items
+                            break;
+                        }
+                    }
+                    break;
+
+                case 3: FruitsLab f = FruitsLab.get(context, false);
+                    for(CartItem ci : f.getCartItemList()){                             //search trhought that lab
+                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                            allCartitems.add(ci);                                       //add it to all cart items
+                            break;
+                        }
+                    }
+                    break;
+
+                case 4: VegetablesLab v = VegetablesLab.get(context, false);
+                    for(CartItem ci : v.getCartItemList()){                             //search trhought that lab
+                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                            allCartitems.add(ci);                                       //add it to all cart items
+                            break;
+                        }
+                    }
+                    break;
+
+                case 5: DryFruitsLab d = DryFruitsLab.get(context, false);
+                    for(CartItem ci : d.getCartItemList()){                             //search trhought that lab
+                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                            allCartitems.add(ci);                                       //add it to all cart items
+                            break;
+                        }
+                    }
+                    break;
+
+                case 6: OthersLab o = OthersLab.get(context, false);
+                    for(CartItem ci : o.getCartItemList()){                             //search trhought that lab
+                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                            allCartitems.add(ci);                                       //add it to all cart items
+                            break;
+                        }
+                    }
+                    break;
+
+            }
+        }
+        return allCartitems;
+    }
 }

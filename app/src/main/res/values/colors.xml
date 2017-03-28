@@ -26,5 +26,10 @@
     <color name="dark_violet">#7B1FA2</color>
     <color name="dark_orange">#F57C00</color>
 
+    <color name="light_amber">#FFECB3</color>
+    <color name="light_green">#DCEDC8</color>
+    <color name="light_red">#ffcdd2</color>
+
     <color name="accent_amber">#FFB74D</color>
+    <color name="Transparent">#FFFFFFFF</color>
 </resources>

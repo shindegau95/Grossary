@@ -6,11 +6,26 @@ package com.pkg.android.grossary.Adapter;
 
 public class RetailList {
     private int quantity;
+    private int price_per_unit;
     private int totalprice;
 
-    public RetailList(int quantity, int totalprice) {
+    public void updateTotalPrice(){
+        setTotalprice(quantity*price_per_unit);
+    }
+
+    public RetailList(int quantity, int price_per_unit) {
         this.quantity = quantity;
-        this.totalprice = totalprice;
+        this.price_per_unit = price_per_unit;
+        updateTotalPrice();
+    }
+
+    public int getPrice_per_unit() {
+        return price_per_unit;
+    }
+
+    public void setPrice_per_unit(int price_per_unit) {
+        this.price_per_unit = price_per_unit;
+
     }
 
     public int getQuantity() {
@@ -19,6 +34,7 @@ public class RetailList {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+        updateTotalPrice();
     }
 
     public int getTotalprice() {
@@ -31,12 +47,14 @@ public class RetailList {
 
     public int incrementqty() {
         quantity++;
+        updateTotalPrice();
         return quantity;
     }
 
     public int decrementqty() {
         if(quantity > 0)
             quantity--;
+        updateTotalPrice();
         return quantity;
     }
 }

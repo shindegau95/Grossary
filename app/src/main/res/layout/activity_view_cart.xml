@@ -43,9 +43,11 @@
             android:layout_marginBottom="56dp"
             android:paddingBottom="8dp"
             android:layout_alignParentTop="true"
+
             >
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -54,6 +56,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/table_title"
+                    android:layout_weight="10"
                     >
 
                     <LinearLayout
@@ -92,14 +95,16 @@
                 </LinearLayout>
 
                     <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scrollbars="vertical"
-                    />
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
 
                 </LinearLayout>
+
                 <LinearLayout
+                    android:layout_weight="1"
                     android:id="@+id/bottomBox"
                     android:layout_below="@id/table_title"
                     android:layout_width="match_parent"
@@ -130,8 +135,9 @@
 
                 </LinearLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
         </android.support.v7.widget.CardView>
+
 
         <android.support.v7.widget.ButtonBarLayout
             android:layout_width="match_parent"

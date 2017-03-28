@@ -2,6 +2,7 @@ package com.pkg.android.grossary.Applications;
 
 import android.app.Application;
 
+import com.pkg.android.grossary.Adapter.RetailListParent;
 import com.pkg.android.grossary.ConnectionPackage.ConnectivityReceiver;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.other.Parser;
@@ -56,10 +57,10 @@ public class GrossaryApplication extends Application {
 
     public void removeFromCart(CartItem item) {
         mCart = getCart();
-        if(item.getCartquantity()==0){
-            mCart.remove(item);
-        }
+        mCart.remove(item);
     }
+
+
 
     public List<Integer> getShoppingListQuantities() {
         return ShoppingListQuantities;
