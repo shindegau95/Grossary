@@ -33,10 +33,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
     @Override
     public void onBindViewHolder(CartItemHolder holder, int position) {
         final CartItem cartItem = mCartItemList.get(position);
-        Log.d(TAG, "prd = " +cartItem.getCartItem().getProduct_name());
-        holder.title.setText(cartItem.getCartItem().getProduct_name());
+        Log.d(TAG, "prd = " +cartItem.getProduct().getProduct_name());
+        holder.title.setText(cartItem.getProduct().getProduct_name());
         holder.quantity.setText(String.valueOf(cartItem.getCartquantity()));
-        int totalprice_peritem = cartItem.getCartquantity() * cartItem.getCartItem().getPrice();
+        int totalprice_peritem = cartItem.getCartquantity() * cartItem.getProduct().getPrice();
         holder.price.setText(String.valueOf(totalprice_peritem));
     }
 

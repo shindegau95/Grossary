@@ -43,6 +43,7 @@ public class Connection {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         Toast.makeText(context, "That didn't work!", Toast.LENGTH_LONG).show();
+                        Log.d("Connection", volleyError.toString());
                     }
                 }
         ) {
@@ -51,6 +52,7 @@ public class Connection {
                 Map<String, String> params = new HashMap<>();
                 params.put("id", a);
                 return params;
+
             }
         };
         queue.add(stringRequest);

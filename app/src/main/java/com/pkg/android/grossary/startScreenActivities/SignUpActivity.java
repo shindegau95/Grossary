@@ -4,6 +4,7 @@ package com.pkg.android.grossary.startScreenActivities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,14 +33,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.pkg.android.grossary.ConnectionPackage.ConnectivityReceiver;
+import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.R;
-import com.pkg.android.grossary.Adapter.UserInfo;
+import com.pkg.android.grossary.model.UserInfo;
+import com.pkg.android.grossary.navigation.Customer.CustomerMainActivity;
+import com.pkg.android.grossary.other.Session;
 
 /**
  * Created by GAURAV on 25-01-2017.
  */
 
-public class SignUpActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class SignUpActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ConnectivityReceiver.ConnectivityReceiverListener{
 
     private static final int RC_SIGN_IN = 9001 ;
     private static final String TAG = "SignUpActivity";
@@ -63,6 +68,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
 
         dbref = FirebaseDatabase.getInstance().getReference("users");
 
+        //wiring
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
         inputEmail = (EditText) findViewById(R.id.email);
@@ -138,24 +144,25 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                                         // If sign in fails, display a message to the user. If sign in succeeds
                                         // the auth state listener will be notified and logic to handle the
                                         // signed in user can be handled in the listener.
-                                        if (!task.isSuccessful()) {
-                                            Toast.makeText(SignUpActivity.this, "Registeration failed",
-                                                    Toast.LENGTH_SHORT).show();
+                                        //first check Internet access
+                                        if(checkConnection()) {
+                                            if (!task.isSuccessful()) {
+                                                Toast.makeText(SignUpActivity.this, "Registeration failed",
+                                                        Toast.LENGTH_SHORT).show();
 
-                                        } else {
-                                            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                            saveintofirebase(user.getEmail());
-                                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                                            finish();
+                                            } else {
+                                                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                                saveintofirebase(user.getEmail());
+                                                Session.setUserId(getApplicationContext(), auth);
+                                                startActivity(new Intent(SignUpActivity.this, CustomerMainActivity.class));
+                                                finish();
+                                            }
                                         }
                                     }
                                 });
 
-
-
             }
         });
-
 
     }
 
@@ -167,7 +174,6 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(!flag) {
-                    String uid = auth.getCurrentUser().getUid();
                     String userId = dbref.push().getKey();
 
 
@@ -228,8 +234,8 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                 }
                 else{
                     final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    saveintofirebase(user.getEmail());
-                    startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                    Session.setUserId(getApplicationContext(), auth);
+                    startActivity(new Intent(SignUpActivity.this, CustomerMainActivity.class));
                     finish();
                 }
 
@@ -240,13 +246,35 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    //to check Internet Connection
+    @Override
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
+        GrossaryApplication.getInstance().setConnectivityListener(this);
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
+    }
+
+    private boolean checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        showSnack(isConnected);
+        return isConnected;
+    }
+
+    private void showSnack(boolean isConnected) {
+        if(!isConnected) {
+            String msg = "Check Internet Connection";
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.linearLayout), msg, Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 }

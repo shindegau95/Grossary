@@ -4,14 +4,18 @@
 
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
-        android:name="com.pkg.android.grossary.Cart"
+        android:name="com.pkg.android.grossary.Applications.GrossaryApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".startScreenActivities.MainActivity">
+        <activity android:name=".navigation.Customer.CustomerMainActivity">
+
+        </activity>
+        <activity android:name=".navigation.Retailer.RetailerMainActivity">
 
         </activity>
         <activity android:name=".startScreenActivities.SignUpActivity">
@@ -20,10 +24,10 @@
         <activity android:name=".startScreenActivities.ResetPasswordActivity">
 
         </activity>
-        <activity android:name=".CategoryWiseProductListActivity">
+        <activity android:name=".navigation.Customer.CategoryWiseProductListActivity">
 
         </activity>
-        <activity android:name=".ViewCartActivity">
+        <activity android:name=".navigation.Customer.ViewCartActivity">
 
         </activity>
         <activity android:name=".startScreenActivities.LoginActivity" android:label="@string/app_name">
@@ -40,6 +44,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".ConnectionPackage.ConnectivityReceiver"
+                  android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
