@@ -46,7 +46,7 @@ public class DairyLab {
 
     public void setRecommendedQuantity(int id, int qty){
         for (int j = 0; j < getCartItemList().size(); j++) {
-            if(getCartItemList().get(j).getCartItem().getProduct_id() == id) {//check the id
+            if(getCartItemList().get(j).getProduct().getProduct_id() == id) {//check the id
                 GrossaryApplication ShoppingCart = GrossaryApplication.getInstance();
                 getCartItemList().get(j).setCartquantity(qty);
                 if(qty == 0){
@@ -58,5 +58,14 @@ public class DairyLab {
             }
         }
 
+    }
+
+    public CartItem getCartItem(int id){
+        for (int j = 0; j < getCartItemList().size(); j++) {
+            if(getCartItemList().get(j).getProduct().getProduct_id() == id) {//check the id
+                return getCartItemList().get(j);
+            }
+        }
+        return null;
     }
 }

@@ -119,9 +119,9 @@ public class ViewCartActivity extends AppCompatActivity {
         total = 0;
         jsonprodlist=new JSONObject();
         for(CartItem c : cart){
-            total += c.getCartquantity()*c.getCartItem().getPrice();
+            total += c.getCartquantity()*c.getProduct().getPrice();
             try {
-                jsonprodlist.put(String.valueOf(c.getCartItem().getProduct_id()),c.getCartquantity());
+                jsonprodlist.put(String.valueOf(c.getProduct().getProduct_id()),c.getCartquantity());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

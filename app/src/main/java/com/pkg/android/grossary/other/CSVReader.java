@@ -278,6 +278,9 @@ public class CSVReader {
 
         //get all cartItems
         List<CartItem> allCartitems = getAllCartItems(context, getAllProducts(context));
+        for(CartItem cartItem: allCartitems){
+            Log.d("REC", cartItem.toString());
+        }
 
         List<Recipe> resultList = new ArrayList();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -337,7 +340,7 @@ public class CSVReader {
 
                 case 1: CerealLab c = CerealLab.get(context, false);                    //get lab instance
                     for(CartItem ci : c.getCartItemList()){                             //search trhought that lab
-                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                        if(p.getProduct_id() == ci.getProduct().getProduct_id()){      //if it matches the id
                             allCartitems.add(ci);                                       //add it to all cart items
                             break;
                         }
@@ -346,7 +349,7 @@ public class CSVReader {
 
                 case 2: DairyLab dr = DairyLab.get(context, false);
                     for(CartItem ci : dr.getCartItemList()){                             //search trhought that lab
-                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                        if(p.getProduct_id() == ci.getProduct().getProduct_id()){      //if it matches the id
                             allCartitems.add(ci);                                       //add it to all cart items
                             break;
                         }
@@ -355,7 +358,7 @@ public class CSVReader {
 
                 case 3: FruitsLab f = FruitsLab.get(context, false);
                     for(CartItem ci : f.getCartItemList()){                             //search trhought that lab
-                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                        if(p.getProduct_id() == ci.getProduct().getProduct_id()){      //if it matches the id
                             allCartitems.add(ci);                                       //add it to all cart items
                             break;
                         }
@@ -364,7 +367,7 @@ public class CSVReader {
 
                 case 4: VegetablesLab v = VegetablesLab.get(context, false);
                     for(CartItem ci : v.getCartItemList()){                             //search trhought that lab
-                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                        if(p.getProduct_id() == ci.getProduct().getProduct_id()){      //if it matches the id
                             allCartitems.add(ci);                                       //add it to all cart items
                             break;
                         }
@@ -373,7 +376,7 @@ public class CSVReader {
 
                 case 5: DryFruitsLab d = DryFruitsLab.get(context, false);
                     for(CartItem ci : d.getCartItemList()){                             //search trhought that lab
-                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                        if(p.getProduct_id() == ci.getProduct().getProduct_id()){      //if it matches the id
                             allCartitems.add(ci);                                       //add it to all cart items
                             break;
                         }
@@ -382,7 +385,7 @@ public class CSVReader {
 
                 case 6: OthersLab o = OthersLab.get(context, false);
                     for(CartItem ci : o.getCartItemList()){                             //search trhought that lab
-                        if(p.getProduct_id() == ci.getCartItem().getProduct_id()){      //if it matches the id
+                        if(p.getProduct_id() == ci.getProduct().getProduct_id()){      //if it matches the id
                             allCartitems.add(ci);                                       //add it to all cart items
                             break;
                         }

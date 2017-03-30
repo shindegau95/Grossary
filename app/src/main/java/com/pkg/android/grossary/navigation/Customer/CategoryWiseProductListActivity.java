@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.ButtonBarLayout;
@@ -40,6 +42,7 @@ import com.pkg.android.grossary.Labs.VegetablesLab;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.other.CallServer;
+import com.pkg.android.grossary.other.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,9 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     boolean noShoppingListItems = false;
     private static final String EXTRA_CHOICE = "com.pkg.android.grossary.choice";
     private List<Boolean> selectedList;
+    public NestedScrollView bottomSheet;
+    public BottomSheetBehavior behavior;
+    private AppBarLayout appBarLayout;
 
     //makes independent of caller activity
     public static Intent newIntent(Context packageContext, int category) {
@@ -101,7 +107,10 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
             setContentView(R.layout.activity_categorywise_productlist);
 
             //wiring
-
+            bottomSheet = (NestedScrollView)findViewById(R.id.bottomsheet);
+            behavior = BottomSheetBehavior.from(bottomSheet);
+            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
             bottomButton = (ButtonBarLayout)findViewById(R.id.bottom_button);
             selectButton = (ToggleButton) findViewById(R.id.selectButton);
             cartfab = (FloatingActionButton)findViewById(R.id.fab);
@@ -110,9 +119,7 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
             initCollapsingToolbar();
 
-            bottomButton.setVisibility(View.GONE);
-            selectButton.setVisibility(View.GONE);
-            //hides the select Button by default
+
 
             mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -121,11 +128,13 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
             selectedList = new ArrayList<>();
             prepareSelectedList();
 
+
             final GrossaryApplication shoppingCart = (GrossaryApplication) getApplicationContext();
             if(category == 0) {
                 mAdapter = new ShoppingListAdapter(this, mCartItemList, selectedList, shoppingCart);
                 bottomButton.setVisibility(View.VISIBLE);
                 selectButton.setVisibility(View.VISIBLE);
+                bottomSheet.setVisibility(View.GONE);
                 ShoppingListLab s = ShoppingListLab.get(getApplicationContext());
                 selectButton.setChecked(s.isAllSelected());
                 selectButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -135,29 +144,36 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
                         if(checked){
                             s.EnableAllItems();
                             for(CartItem ci: s.getCartItemList()){
-                                ShoppingListAdapter.setLabQuantity(ci, ci.getCartItem().getProduct_id(), ci.getCartquantity(), getApplicationContext());
+                                ShoppingListAdapter.setLabQuantity(ci, ci.getProduct().getProduct_id(), ci.getCartquantity(), getApplicationContext());
                             }
                             mAdapter.notifyDataSetChanged();
+
                         }else{
                             s.DisableAllItems();
                             for(CartItem ci: s.getCartItemList()){
-                                ShoppingListAdapter.setLabQuantity(ci, ci.getCartItem().getProduct_id(), 0, getApplicationContext());
+                                ShoppingListAdapter.setLabQuantity(ci, ci.getProduct().getProduct_id(), 0, getApplicationContext());
                             }
                             mAdapter.notifyDataSetChanged();
                         }
                     }
                 });
+
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, GridSpacingItemDecoration.dpToPx(getApplicationContext(), 10), true));
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                mRecyclerView.setAdapter(mAdapter);
             }
-            else
-                mAdapter = new CustomerCategoryProductAdapter(this, mCartItemList, shoppingCart);
+            else {
+                mAdapter = new CustomerCategoryProductAdapter(this, mCartItemList, shoppingCart, this);
 
 
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
-            mRecyclerView.setLayoutManager(mLayoutManager);
-            mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            mRecyclerView.setAdapter(mAdapter);
-
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                //mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, GridSpacingItemDecoration.dpToPx(getApplicationContext(), 10), true));
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                mRecyclerView.setAdapter(mAdapter);
+            }
 
             cartfab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -167,6 +183,26 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
                 }
             });
 
+            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(View bottomSheet, int newState) {
+
+                    // Check Logs to see how bottom sheets behaves
+                    switch (newState) {
+                        case BottomSheetBehavior.STATE_EXPANDED:
+                        case BottomSheetBehavior.STATE_COLLAPSED:
+                            appBarLayout.setExpanded(false);
+                            break;
+
+                    }
+                }
+
+
+                @Override
+                public void onSlide(View bottomSheet, float slideOffset) {
+
+                }
+            });
 
 
             try {
@@ -225,32 +261,7 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
             }
 
         }
-        /*else {
-            CategoryWiseProductLab c = CategoryWiseProductLab.get(this, category);
 
-            for (int i = 0; i < c.getProductList().size(); i++) {
-                Product p = c.getProductList().get(i);
-                CartItem ci = new CartItem(p);
-                mCartItemList.add(ci);
-            }
-
-
-            Log.d(TAG, String.valueOf("22" + mCartItemList.get(0).getCartItem()));
-
-        p = new Product();
-        p.setProduct_name("Chana Dal");
-        p.setPrice(128);
-        p.setThumbnail(covers[1]);
-        mProductList.add(p);
-
-        p = new Product();
-        p.setProduct_name("Rice");
-        p.setPrice(80);
-        p.setThumbnail(covers[2]);
-        mProductList.add(p);
-
-
-        Log.d(TAG, "Category = " + category + mProductList.get(0).getThumbnail());*/
     }
 
 
@@ -261,7 +272,6 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
         final CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
 
         changetoolbarcolor(category,collapsingToolbar);
@@ -376,52 +386,14 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
         }
     }
 
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        //adjusting the spacing between cards
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
-        }
-    }
-
-    private int dpToPx(int dp) {
-        //converting dp to pixel
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
         mAdapter.notifyDataSetChanged();
+    }
+
+    public RecyclerView.Adapter getAdapter() {
+        return mAdapter;
     }
 }

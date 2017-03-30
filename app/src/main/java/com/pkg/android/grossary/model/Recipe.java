@@ -1,5 +1,6 @@
 package com.pkg.android.grossary.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +12,10 @@ public class Recipe {
     private String recipe_name;
     private int thumbnail;
     private List<CartItem> ingredients;
+
+    public Recipe() {
+        ingredients = new ArrayList<>();
+    }
 
     public int getRecipe_id() {
         return recipe_id;

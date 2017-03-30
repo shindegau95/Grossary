@@ -38,7 +38,7 @@ public class RetailListParent implements Parent<RetailList>,Comparable<RetailLis
 
     public void setProduct(Product cartItem) {
         this.product = cartItem;
-        this.cartItem.setCartItem(product);
+        this.cartItem.setProduct(product);
     }
 
     public int incrementqty() {

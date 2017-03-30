@@ -49,8 +49,8 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         final CartItem item = mCartItemProductList.get(position);
         final Boolean selected = selectedList.get(position);
         //Log.d(TAG, String.valueOf(item.getCartItem()));
-        holder.product_name.setText(((Product)item.getCartItem()).getProduct_name());
-        holder.price.setText(item.getCartItem().getPrice() + "/" + item.getCartItem().getProduct_unit());
+        holder.product_name.setText(((Product)item.getProduct()).getProduct_name());
+        holder.price.setText(item.getProduct().getPrice() + "/" + item.getProduct().getProduct_unit());
         holder.productquantity.setText(String.valueOf(item.getCartquantity()));
 
         //itialization
@@ -60,6 +60,23 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             toggle(holder, false);
         }
 
+        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(selected) {
+                    //if its already selected, after clicking,
+                    toggle(holder, false);
+                    deselect(holder, item, position);
+
+                }else{
+                    //if its already deselected, after clicking
+                    toggle(holder, true);
+                    select(holder,item, position);
+                }
+                notifyDataSetChanged(); //vvip step
+
+            }
+        });
         holder.select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +97,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         holder.productplus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int prd_id = item.getCartItem().getProduct_id();
+                int prd_id = item.getProduct().getProduct_id();
                 int prd_qty = item.incrementqty();
                 setLabQuantity(item, prd_id, prd_qty, mContext);
                 holder.productquantity.setText(String.valueOf(prd_qty));
@@ -91,7 +108,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         holder.productminus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int prd_id = item.getCartItem().getProduct_id();
+                int prd_id = item.getProduct().getProduct_id();
                 int prd_qty = item.decrementqty();
 
                 if(prd_qty == 0){
@@ -103,7 +120,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
                 holder.productquantity.setText(String.valueOf(prd_qty));
             }
         });
-        Glide.with(mContext).load(item.getCartItem().getThumbnail()).into(holder.thumbnail);
+        Glide.with(mContext).load(item.getProduct().getThumbnail()).into(holder.thumbnail);
 
     }
 
@@ -128,7 +145,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     }
     private void deselect(ProductViewHolder holder, CartItem item, int position) {
 
-        int prd_id = item.getCartItem().getProduct_id();
+        int prd_id = item.getProduct().getProduct_id();
         int prd_qty = 0;
         setLabQuantity(item, prd_id, prd_qty, mContext);
 
@@ -138,7 +155,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     }
     private void select(ProductViewHolder holder, CartItem item, int position) {
 
-        int prd_id = item.getCartItem().getProduct_id();
+        int prd_id = item.getProduct().getProduct_id();
         int prd_qty = Integer.parseInt(String.valueOf(holder.productquantity.getText()));
         setLabQuantity(item, prd_id, prd_qty, mContext);
 
@@ -147,7 +164,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     }
 
     public static void setLabQuantity(CartItem item,int prd_id, int prd_qty, Context mContext) {
-        switch(item.getCartItem().getCategory_id()){
+        switch(item.getProduct().getCategory_id()){
             case 1: CerealLab c = CerealLab.get(mContext, false);
                 c.setRecommendedQuantity(prd_id,prd_qty);
                 break;

@@ -73,7 +73,7 @@ public class ShoppingListLab {
 
     public void DisableItem(int id){
         for (int j = 0; j < getCartItemList().size(); j++) {
-            if(getCartItemList().get(j).getCartItem().getProduct_id() == id) {//check the id
+            if(getCartItemList().get(j).getProduct().getProduct_id() == id) {//check the id
 
                 selectedList.set(j,false);
                 GrossaryApplication grossaryApplication = GrossaryApplication.getInstance();
