@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:background="@color/white"
+              android:weightSum="1"
+              android:id="@+id/backgroundlayout">
+
+    <ImageView
+        android:id="@+id/icon_image"
+        android:src="@drawable/bg_circle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/parent_list_item_product_title_text_view"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingRight="16dp"
+        android:textStyle="bold"
+        android:text="Product Title"
+        android:layout_toRightOf="@id/icon_image"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/parent_list_item_price_per_unit"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:text="Price"
+        android:layout_gravity="center_vertical|end"
+        android:gravity="right"/>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/selectCheckBox"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:layout_gravity="center_vertical|end"
+        android:buttonTint="@color/amber"
+        android:gravity="right"/>
+
+</LinearLayout>
