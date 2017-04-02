@@ -16,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.pkg.android.grossary.Adapter.CategoryAdapter;
+import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.Category;
+import com.pkg.android.grossary.other.CallServer;
 
 /**
  * Created by GAURAV on 30-01-2017.
@@ -59,7 +61,7 @@ public class CustomerHomeFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_customer_home, container, false);
 
-        //
+
         // Get the widgets reference from XML layout
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 
@@ -83,70 +85,6 @@ public class CustomerHomeFragment extends Fragment{
         mRecyclerView.setAdapter(mAdapter);
         //
 
-        /*mShoppingListImageView = (ImageView) rootView.findViewById(R.id.thumbnail_shopping_list);
-        mShoppingListImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = CategoryWiseProductListActivity.newIntent(getActivity(), 1);
-                startActivity(i);
-            }
-        });
-
-        mCerealImageView = (ImageView) rootView.findViewById(R.id.thumbnail_cereal);
-        mCerealImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = CategoryWiseProductListActivity.newIntent(getActivity(), 1);
-                startActivity(i);
-
-            }
-        });
-
-        mDairyImageView = (ImageView) rootView.findViewById(R.id.thumbnail_dairy);
-        mDairyImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = CategoryWiseProductListActivity.newIntent(getActivity(), 2);
-                startActivity(i);
-            }
-        });
-
-        mFruitsImageView = (ImageView) rootView.findViewById(R.id.thumbnail_fruits);
-        mFruitsImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = CategoryWiseProductListActivity.newIntent(getActivity(), 3);
-                startActivity(i);
-                Log.d(TAG,"inside fruits");
-            }
-        });
-
-        mVegetablesImageView = (ImageView) rootView.findViewById(R.id.thumbnail_vegetables);
-        mVegetablesImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = CategoryWiseProductListActivity.newIntent(getActivity(), 4);
-                startActivity(i);
-            }
-        });
-
-        mDryFruitsImageView = (ImageView) rootView.findViewById(R.id.thumbnail_dryfruits);
-        mDryFruitsImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = CategoryWiseProductListActivity.newIntent(getActivity(), 5);
-                startActivity(i);
-            }
-        });
-
-        mMiscellaneousImageView = (ImageView) rootView.findViewById(R.id.thumbnail_miscellaneous);
-        mMiscellaneousImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = CategoryWiseProductListActivity.newIntent(getActivity(), 6);
-                startActivity(i);
-            }
-        });*/
 
 
         return rootView;

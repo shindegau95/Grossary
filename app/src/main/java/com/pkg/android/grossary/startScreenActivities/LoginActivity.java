@@ -140,7 +140,11 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                                 }
                             } else {
                                 Intent intent;
-                                Session.setUserId(getApplicationContext(), auth);
+                                Toast.makeText(getApplicationContext(),"Before = "+ String.valueOf(Session.getUserId(getApplicationContext())),Toast.LENGTH_SHORT).show();
+                                Session.removePreviousUserId(getApplicationContext());
+                                Toast.makeText(getApplicationContext(),"After remove = "+ String.valueOf(Session.getUserId(getApplicationContext())),Toast.LENGTH_SHORT).show();
+                                Session.setUserId(LoginActivity.this, auth);
+                                Toast.makeText(getApplicationContext(),"Finally = "+ String.valueOf(Session.getUserId(getApplicationContext())),Toast.LENGTH_SHORT).show();
                                 if(email.equals("retailer.grossary@gmail.com")){
                                     intent = new Intent(LoginActivity.this, RetailerMainActivity.class);
                                 }else{

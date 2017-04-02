@@ -48,16 +48,30 @@ public class ShoppingListLab {
         GrossaryApplication grossaryApplication = (GrossaryApplication)context.getApplicationContext();
 
         int qty;
-        for (int j = 0; j < productList.size(); j++) {
-            Product p = productList.get(j);
-            CartItem ci = new CartItem(p);
-            qty = grossaryApplication.getShoppingListQuantities().get(j);
-            ci.setCartquantity(qty);
-            if(qty>0)
-                itemList.add(ci);
+        if(true) {
+            for (int j = 0; j < productList.size(); j++) {
+                Product p = productList.get(j);
+                CartItem ci = new CartItem(p);
+                qty = grossaryApplication.getShoppingListQuantities().get(j);
+                ci.setCartquantity(qty);
+                if (qty > 0)
+                    itemList.add(ci);
 
-            //for select list
-            selectedList.add(false);
+                //for select list
+                selectedList.add(false);
+            }
+        }else{
+            for (int j = 0; j < productList.size(); j++) {
+                Product p = productList.get(j);
+                CartItem ci = new CartItem(p);
+                qty = 0;
+                ci.setCartquantity(0);
+                if (qty > 0)
+                    itemList.add(ci);
+
+                //for select list
+                selectedList.add(false);
+            }
         }
 
 
@@ -71,6 +85,9 @@ public class ShoppingListLab {
         return sShoppingListLab;
     }
 
+    public static void makeListNull(){
+        sShoppingListLab = null;
+    }
     public void DisableItem(int id){
         for (int j = 0; j < getCartItemList().size(); j++) {
             if(getCartItemList().get(j).getProduct().getProduct_id() == id) {//check the id

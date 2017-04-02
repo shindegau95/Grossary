@@ -30,6 +30,7 @@ import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.other.CallServer;
 import com.pkg.android.grossary.other.DividerItemDecoration;
+import com.pkg.android.grossary.other.Session;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +74,7 @@ public class ViewCartActivity extends AppCompatActivity {
             public void onClick(View view) {
                 CallServer.updateShoppingList(ViewCartActivity.this);
                 CallServer.checkout(ViewCartActivity.this, jsonprodlist);
+
             }
         });
 

@@ -1,21 +1,17 @@
 package com.pkg.android.grossary.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
@@ -23,13 +19,9 @@ import com.pkg.android.grossary.Labs.RecipeLab;
 import com.pkg.android.grossary.Labs.ShoppingListLab;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
-import com.pkg.android.grossary.model.Category;
 import com.pkg.android.grossary.model.Product;
 import com.pkg.android.grossary.model.Recipe;
 import com.pkg.android.grossary.navigation.Customer.CategoryWiseProductListActivity;
-import com.pkg.android.grossary.other.DividerItemDecoration;
-import com.pkg.android.grossary.other.Parser;
-import com.pkg.android.grossary.other.Session;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,12 @@
 package com.pkg.android.grossary.navigation.Customer;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
@@ -14,13 +15,12 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -41,8 +41,10 @@ import com.pkg.android.grossary.Labs.ShoppingListLab;
 import com.pkg.android.grossary.Labs.VegetablesLab;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
+import com.pkg.android.grossary.other.BGTask;
 import com.pkg.android.grossary.other.CallServer;
 import com.pkg.android.grossary.other.GridSpacingItemDecoration;
+import com.pkg.android.grossary.other.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,9 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     public BottomSheetBehavior behavior;
     private AppBarLayout appBarLayout;
 
+    private Handler handler;
+    private ProgressDialog mProgressDialog;
+
     //makes independent of caller activity
     public static Intent newIntent(Context packageContext, int category) {
         Intent i = new Intent(packageContext, CategoryWiseProductListActivity.class);
@@ -83,22 +88,40 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //first try and get it in shared pref
         //so first get it into GrossaryApplication
-        ((GrossaryApplication)getApplicationContext()).setShoppingListQuantities();
-        if(((GrossaryApplication)getApplicationContext()).getShoppingListQuantities() == null){
-            //if not there in pref, try to update the shoppinglist as it is
-            CallServer.updateShoppingList(this);
 
+/*
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                BGTask bgTask = new BGTask(CategoryWiseProductListActivity.this);
+                bgTask.execute();
+            }
+        });
+*/
+
+        GrossaryApplication.getInstance().setShoppingListQuantities();
+
+        if((GrossaryApplication.getInstance().getShoppingListQuantities() == null)){
+            //if not there in pref, try to update the shoppinglist as it is
+            Log.d("HELLO", "started");
+            CallServer.updateShoppingList(this);//check here
+            GrossaryApplication.getInstance().setShoppingListQuantities();
             //write code here for showing async task
         }
-        if(((GrossaryApplication)getApplicationContext()).getShoppingListQuantities() == null){
+
+        if(GrossaryApplication.getInstance().getShoppingListQuantities() == null){
             //if there is no such entry available
             noShoppingListItems = true;
+        }else{
+            noShoppingListItems = false;
         }
 
         category = getIntent().getIntExtra(EXTRA_CHOICE, 1);
         if(category == 0 && noShoppingListItems){
+            Toast.makeText(getApplicationContext(), String.valueOf(category),Toast.LENGTH_SHORT).show();
             setContentView(R.layout.activity_no_items_in_shopping_list);
 
         }
@@ -125,12 +148,14 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
 
             mCartItemList = new ArrayList<>();
             prepareProducts();
-            selectedList = new ArrayList<>();
-            prepareSelectedList();
 
 
             final GrossaryApplication shoppingCart = (GrossaryApplication) getApplicationContext();
             if(category == 0) {
+
+                selectedList = new ArrayList<>();
+                prepareSelectedList();
+
                 mAdapter = new ShoppingListAdapter(this, mCartItemList, selectedList, shoppingCart);
                 bottomButton.setVisibility(View.VISIBLE);
                 selectButton.setVisibility(View.VISIBLE);
@@ -170,7 +195,6 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
 
                 RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
                 mRecyclerView.setLayoutManager(mLayoutManager);
-                //mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, GridSpacingItemDecoration.dpToPx(getApplicationContext(), 10), true));
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 mRecyclerView.setAdapter(mAdapter);
             }
@@ -390,7 +414,6 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mAdapter.notifyDataSetChanged();
     }
 
     public RecyclerView.Adapter getAdapter() {

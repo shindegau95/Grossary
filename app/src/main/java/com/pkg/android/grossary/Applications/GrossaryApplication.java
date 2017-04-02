@@ -1,6 +1,7 @@
 package com.pkg.android.grossary.Applications;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.pkg.android.grossary.Adapter.RetailListParent;
 import com.pkg.android.grossary.ConnectionPackage.ConnectivityReceiver;
@@ -16,7 +17,6 @@ import java.util.List;
  */
 
 public class GrossaryApplication extends Application {
-
     private static GrossaryApplication mInstance;
     private static final String TAG = "GrossaryApplication";
     private List<CartItem> mCart;
@@ -67,6 +67,7 @@ public class GrossaryApplication extends Application {
     }
 
     public void setShoppingListQuantities() {
-        ShoppingListQuantities = Parser.parseShoppingList(Session.getShoppingListString(this));;
+        Log.d("HELLO","SETSTRING = "+Session.getShoppingListString(this));
+        ShoppingListQuantities = Parser.parseShoppingList(Session.getShoppingListString(this));
     }
 }

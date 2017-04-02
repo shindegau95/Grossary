@@ -1,5 +1,6 @@
 package com.pkg.android.grossary.navigation.Customer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,17 +14,22 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.navigation.AboutUsFragment;
+import com.pkg.android.grossary.other.BGTask;
 import com.pkg.android.grossary.other.CallServer;
+import com.pkg.android.grossary.other.Session;
 import com.pkg.android.grossary.startScreenActivities.LoginActivity;
 
 public class CustomerMainActivity extends AppCompatActivity  {
@@ -69,9 +75,20 @@ public class CustomerMainActivity extends AppCompatActivity  {
 
         auth = FirebaseAuth.getInstance();
 
+        GrossaryApplication.getInstance().setShoppingListQuantities();
+
+        if((GrossaryApplication.getInstance().getShoppingListQuantities() == null)){
+            //if not there in pref, try to update the shoppinglist as it is
+            Log.d("HELLO", "custmain act started");
+            CallServer.updateShoppingList(this);//check here
+            GrossaryApplication.getInstance().setShoppingListQuantities();
+            //write code here for showing async task
+        }
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Toast.makeText(getApplicationContext(),"after logging in, "+Session.getShoppingListString(getApplicationContext()),Toast.LENGTH_SHORT).show();
 
+        Toast.makeText(getApplicationContext(), String.valueOf(Session.getUserId(getApplicationContext())), Toast.LENGTH_SHORT).show();
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -342,6 +359,9 @@ public class CustomerMainActivity extends AppCompatActivity  {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
+            Session.removePreviousShoppingList(getApplicationContext());
+            Session.removePreviousUserId(getApplicationContext());
+
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage( getBaseContext().getPackageName() );
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

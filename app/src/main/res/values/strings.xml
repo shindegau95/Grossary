@@ -59,4 +59,5 @@
     <string name="dryfruits">Dry Fruits</string>
     <string name="miscellaneous">Others</string>
     <string name="cart">Cart</string>
+    <string name="btn_sign_up">SIGN UP</string>
 </resources>

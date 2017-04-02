@@ -36,6 +36,7 @@ public class Connection {
                     @Override
                     public void onResponse(String response) {
                         Log.e("params1", response);
+                        //Toast.makeText(context, "inside on post response = "+response,Toast.LENGTH_SHORT).show();
                         aSyncResponse.processFinish(response);
                     }
                 },
@@ -50,6 +51,7 @@ public class Connection {
             @Override
             protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
                 Map<String, String> params = new HashMap<>();
+                Log.d("HELLO", "id in async = " + a);
                 params.put("id", a);
                 return params;
 

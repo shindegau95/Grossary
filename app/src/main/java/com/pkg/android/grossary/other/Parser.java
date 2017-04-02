@@ -13,6 +13,9 @@ import java.util.Scanner;
 public class Parser {
     public static ArrayList parseShoppingList(String s){
         s = removeBrackets(s);
+        if(s==null || s.isEmpty()){
+            return null;
+        }
         List<Integer> l = new ArrayList<>();
         Scanner sc = new Scanner(s);
         while(sc.hasNext())
@@ -21,6 +24,9 @@ public class Parser {
     }
 
     public static String removeBrackets(String s) {
+        if(s == null || s.isEmpty()){
+            return null;
+        }
         StringBuffer sb = new StringBuffer(s);
         sb.deleteCharAt(0);
         sb.deleteCharAt(sb.length()-1);
