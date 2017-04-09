@@ -1,8 +1,10 @@
 package com.pkg.android.grossary.other;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,8 +15,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
+import com.pkg.android.grossary.Labs.RecipeLab;
 import com.pkg.android.grossary.Labs.ShoppingListLab;
+import com.pkg.android.grossary.model.CartItem;
+import com.pkg.android.grossary.model.Recipe;
+import com.pkg.android.grossary.navigation.Customer.CustomerMainActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -25,30 +36,45 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class Session {
-    private static final String TAG = "Session";
+    private static final String TAG = "GSession";
     public static final String SESSIONPREF = "SessionPref";
     public static final String USERID = "useridkey";
     private static final String SHOPPINGLISTSTRING = "shoppingListString";
+    private static final String RECIPELISTSTRING = "recipeliststring";
 
     public static void setUserId(final Context context, final FirebaseAuth auth){
+        removePreviousUserId(context);
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("users");
-        dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Toast.makeText(context, "WAIT", Toast.LENGTH_SHORT).show();
                 Map<String, Object> keymap = (Map<String, Object>) dataSnapshot.getValue();
                 for (Map.Entry<String, Object> entry:keymap.entrySet()) {
                     Map<String, String> mailmap = (Map<String, String>) entry.getValue();
                     SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
                     if(String.valueOf(mailmap.get("emailid")).equals(auth.getCurrentUser().getEmail())){
-                        Log.d(TAG,"userid = "+ String.valueOf(mailmap.get("userid")));
-                        Toast.makeText(context,"before comit = " + String.valueOf(mailmap.get("userid")), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG,"Changed userid = "+ String.valueOf(mailmap.get("userid")));
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putInt(USERID, Integer.parseInt(String.valueOf(mailmap.get("userid"))));
                         editor.commit();
-                        Toast.makeText(context,"from pref comit = " + String.valueOf(sharedpreferences.getInt(USERID,0)), Toast.LENGTH_SHORT).show();
-                        Toast.makeText(context,"after comit = " + String.valueOf(Session.getUserId(context)), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG,"From Preferences, userid = " + String.valueOf(sharedpreferences.getInt(USERID,0)));
+
+
+                        //because for the first time we need id to be set otherwise it will fetch for 0
+                        GrossaryApplication.getInstance().setShoppingListQuantities();
+
+                        if((GrossaryApplication.getInstance().getShoppingListQuantities() == null)){
+                            //if not there in pref, try to update the shoppinglist as it is
+
+                            CallServer.updateShoppingList((Activity) context);//check here
+                            GrossaryApplication.getInstance().setShoppingListQuantities();
+                            //write code here for showing async task
+                        }
                     }
+
                 }
+                Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -57,23 +83,11 @@ public class Session {
             }
         });
 
-        /*BGTask bgTask = new BGTask(context, auth);
-        bgTask.execute();
-        String id = bgTask.getId();
-        Log.d("HELLO","userid = "+ id);
-        Toast.makeText(context,"before comit = " + id, Toast.LENGTH_SHORT).show();
-        SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putInt(USERID, Integer.parseInt(id));
-        editor.commit();
-        Toast.makeText(context,"from pref comit = " + String.valueOf(sharedpreferences.getInt(USERID,0)), Toast.LENGTH_SHORT).show();
-        Toast.makeText(context,"after comit = " + String.valueOf(Session.getUserId(context)), Toast.LENGTH_SHORT).show();
-*/
     }
 
     public static int getUserId(final Context context){
         SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
-        int id = sharedpreferences.getInt(USERID,0);
+        int id = sharedpreferences.getInt(USERID,-1);
         return id;
     }
 
@@ -92,6 +106,7 @@ public class Session {
     }
 
     public static void setShoppingListString(final Context context, String output){
+        removePreviousShoppingList(context);
         SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(SHOPPINGLISTSTRING, output);
@@ -106,4 +121,25 @@ public class Session {
         editor.commit();
     }
 
+    public static String getRecipeListString(final Context context){
+        SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        String listString= sharedpreferences.getString(RECIPELISTSTRING,null);
+        return listString;
+    }
+
+    public static void setRecipeListString(final Context context, String output){
+        removeRecipeList(context);
+        SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(RECIPELISTSTRING, output);
+        editor.commit();
+    }
+
+    public static void removeRecipeList(Context context) {
+        RecipeLab.makeListNull();
+        SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove(RECIPELISTSTRING);
+        editor.commit();
+    }
 }

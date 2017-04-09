@@ -104,7 +104,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     private void prepareRecipies(Recipe recipe) {
-        RecipeLab r = RecipeLab.get(mContext);
+        RecipeLab r = RecipeLab.get(mContext, GrossaryApplication.getInstance().getRecipeList());
         mRecipeProductsList = r.getRecipeProductsList(mContext, recipe);
     }
 

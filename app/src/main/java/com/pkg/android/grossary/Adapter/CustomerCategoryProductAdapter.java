@@ -1,17 +1,22 @@
 package com.pkg.android.grossary.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
@@ -22,6 +27,9 @@ import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.model.Product;
 import com.pkg.android.grossary.model.Recipe;
 import com.pkg.android.grossary.navigation.Customer.CategoryWiseProductListActivity;
+import com.pkg.android.grossary.other.CallServer;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +40,14 @@ import java.util.List;
 
 public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<CustomerCategoryProductAdapter.ProductViewHolder> {
 
-    private Context mContext;
+    private static Context mContext;
     private List<CartItem> mCartItemProductList;
-    private List<Recipe> mRecipeList;
+    private static List<Recipe> mRecipeList;
     private GrossaryApplication ShoppingCart;
-    private CategoryWiseProductListActivity mParentActivity;
+    private static CategoryWiseProductListActivity mParentActivity;
     private String TAG = "CustomerAct";
-    private RecyclerView mRecipeRecyclerView;
-    private RecipeAdapter mRecipeAdapter;
+    private static RecyclerView mRecipeRecyclerView;
+    private static RecipeAdapter mRecipeAdapter;
 
     //constructor
     public CustomerCategoryProductAdapter(Context context, List<CartItem> cartItemList, GrossaryApplication ShoppingCart, CategoryWiseProductListActivity categoryWiseProductListActivity) {
@@ -83,7 +91,7 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         final CartItem item = mCartItemProductList.get(position);
-
+        mRecipeRecyclerView = (RecyclerView)mParentActivity.findViewById(R.id.recipe_recycler_view);
         holder.product_name.setText(((Product)item.getProduct()).getProduct_name());
         holder.price.setText(item.getProduct().getPrice() + "/" + item.getProduct().getProduct_unit());
         holder.productquantity.setText(String.valueOf(item.getCartquantity()));
@@ -115,7 +123,9 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
                 }
                 disableInShoppingList(position+1);  //vvip step
 
+                new LoadRecipes().execute();
                 getRecipies();
+                mRecipeAdapter.notifyDataSetChanged();
                 changeBottomSheetState();
                 notifyDataSetChanged();
             }
@@ -137,8 +147,27 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
 
     }
 
-    private void getRecipies() {
-        mRecipeRecyclerView = (RecyclerView)mParentActivity.findViewById(R.id.recipe_recycler_view);
+    @Override
+    public int getItemCount() {
+        return mCartItemProductList.size();
+    }
+
+    private ArrayList<Integer> prepareProdList() {
+        GrossaryApplication shoppingCart = (GrossaryApplication)GrossaryApplication.getInstance();
+
+        List<CartItem> cart = shoppingCart.getCart();
+
+        ArrayList<Integer> prodlist=new ArrayList<>();
+        for(CartItem c : cart){
+            prodlist.add(c.getProduct().getProduct_id());
+
+        }
+        Log.d(TAG, "Prod List= "+ prodlist.toString());
+        return prodlist;
+    }
+
+    public static void getRecipies() {
+
 
         mRecipeList = new ArrayList<>();
         prepareRecipies();
@@ -152,15 +181,12 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);
     }
 
-    private void prepareRecipies() {
-        RecipeLab r = RecipeLab.get(mContext);
+    private static void prepareRecipies() {
+        RecipeLab r = RecipeLab.get(mContext, GrossaryApplication.getInstance().getRecipeList());
         mRecipeList = r.getRecipeList();
     }
 
-    @Override
-    public int getItemCount() {
-        return mCartItemProductList.size();
-    }
+
 
     private void disableInShoppingList(int id) {
         ShoppingListLab s = ShoppingListLab.get(mContext);
@@ -177,4 +203,32 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
         }
     }
 
+
+    public class LoadRecipes extends AsyncTask<Void, Void, Void>{
+        private ProgressBar mProgressBar;
+
+
+        public LoadRecipes(){
+            super();
+            mProgressBar = (ProgressBar)mParentActivity.findViewById(R.id.recipeprogressBar);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ArrayList<Integer> prodlist = prepareProdList();
+            CallServer.updateRecipeList(mParentActivity, prodlist);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mProgressBar.setVisibility(View.GONE);
+            mRecipeRecyclerView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mRecipeRecyclerView.setVisibility(View.GONE);
+        }
+    }
 }

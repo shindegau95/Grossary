@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -56,13 +57,13 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
 
         Window window = this.getWindow();
 
-// clear FLAG_TRANSLUCENT_STATUS flag:
+        // clear FLAG_TRANSLUCENT_STATUS flag:
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-// add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-// finally change the color
+        // finally change the color
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.dark_brown));
 
         //getting the firebase auth instance
@@ -140,11 +141,9 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                                 }
                             } else {
                                 Intent intent;
-                                Toast.makeText(getApplicationContext(),"Before = "+ String.valueOf(Session.getUserId(getApplicationContext())),Toast.LENGTH_SHORT).show();
-                                Session.removePreviousUserId(getApplicationContext());
-                                Toast.makeText(getApplicationContext(),"After remove = "+ String.valueOf(Session.getUserId(getApplicationContext())),Toast.LENGTH_SHORT).show();
                                 Session.setUserId(LoginActivity.this, auth);
-                                Toast.makeText(getApplicationContext(),"Finally = "+ String.valueOf(Session.getUserId(getApplicationContext())),Toast.LENGTH_SHORT).show();
+
+
                                 if(email.equals("retailer.grossary@gmail.com")){
                                     intent = new Intent(LoginActivity.this, RetailerMainActivity.class);
                                 }else{

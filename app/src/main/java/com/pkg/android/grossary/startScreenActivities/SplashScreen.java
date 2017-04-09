@@ -22,7 +22,7 @@ import com.pkg.android.grossary.R;
 
 public class SplashScreen extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 1500;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

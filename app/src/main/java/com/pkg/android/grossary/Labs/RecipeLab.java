@@ -24,13 +24,25 @@ public class RecipeLab {
         return recipeList;
     }
 
-    public RecipeLab(Context context) {
-        recipeList = CSVReader.readRecipeList(context);
+    public RecipeLab(Context context, List<Integer> recipeListString) {
+        ArrayList<Recipe> allrecipeList;
+        allrecipeList = CSVReader.readRecipeList(context);
+        recipeList = new ArrayList<>();
+        if(recipeListString!=null) {
+            for (Recipe r : allrecipeList) {
+                for (Integer recipeId : recipeListString) {
+                    if (r.getRecipe_id() == recipeId) {
+                        recipeList.add(r);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
-    public static RecipeLab get(Context context) {
+    public static RecipeLab get(Context context, List<Integer> recipeListString) {
         if(sRecipeLab == null){
-            sRecipeLab = new RecipeLab(context);
+            sRecipeLab = new RecipeLab(context,recipeListString);
         }
         return sRecipeLab;
     }
@@ -62,5 +74,9 @@ public class RecipeLab {
             }
         }
         return mRecipeProductsList;
+    }
+
+    public static void makeListNull(){
+        sRecipeLab = null;
     }
 }

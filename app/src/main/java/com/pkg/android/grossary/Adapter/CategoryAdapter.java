@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.Category;
 import com.pkg.android.grossary.navigation.Customer.CategoryWiseProductListActivity;
+import com.pkg.android.grossary.other.CallServer;
 
 import java.util.Random;
 

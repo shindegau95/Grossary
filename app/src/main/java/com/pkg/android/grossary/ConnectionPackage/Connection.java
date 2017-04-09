@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.pkg.android.grossary.other.Session;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class Connection {
                     @Override
                     public void onResponse(String response) {
                         Log.e("params1", response);
+                        Log.d("GConnection", String.valueOf(Session.getUserId(context)));
                         //Toast.makeText(context, "inside on post response = "+response,Toast.LENGTH_SHORT).show();
                         aSyncResponse.processFinish(response);
                     }
@@ -43,7 +45,7 @@ public class Connection {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(context, "That didn't work!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "That didn't work!..", Toast.LENGTH_LONG).show();
                         Log.d("Connection", volleyError.toString());
                     }
                 }

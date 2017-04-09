@@ -35,17 +35,15 @@ import com.pkg.android.grossary.startScreenActivities.LoginActivity;
 public class CustomerMainActivity extends AppCompatActivity  {
 
 
-    private static final String TAG =  "CustomerMainActivity";
+    private static final String TAG =  "GCustomerMainActivity";
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private View navHeader;
-    private ImageView imgNavHeaderBg, imgProfile;
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
     private FloatingActionButton fab;
-
-    // urls to load navigation header background image
-    // and profile image
+    private ImageView imgNavHeaderBg;
+    private ImageView imgProfile;
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
@@ -75,20 +73,8 @@ public class CustomerMainActivity extends AppCompatActivity  {
 
         auth = FirebaseAuth.getInstance();
 
-        GrossaryApplication.getInstance().setShoppingListQuantities();
-
-        if((GrossaryApplication.getInstance().getShoppingListQuantities() == null)){
-            //if not there in pref, try to update the shoppinglist as it is
-            Log.d("HELLO", "custmain act started");
-            CallServer.updateShoppingList(this);//check here
-            GrossaryApplication.getInstance().setShoppingListQuantities();
-            //write code here for showing async task
-        }
-
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Toast.makeText(getApplicationContext(),"after logging in, "+Session.getShoppingListString(getApplicationContext()),Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getApplicationContext(), String.valueOf(Session.getUserId(getApplicationContext())), Toast.LENGTH_SHORT).show();
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -99,6 +85,7 @@ public class CustomerMainActivity extends AppCompatActivity  {
             }
         };
 
+        Log.d("LOGIN", String.valueOf(Session.getUserId(CustomerMainActivity.this)));
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -209,6 +196,7 @@ public class CustomerMainActivity extends AppCompatActivity  {
     }
 
     private Fragment getHomeFragment() {
+
         switch (navItemIndex) {
             case 0:
                 // home

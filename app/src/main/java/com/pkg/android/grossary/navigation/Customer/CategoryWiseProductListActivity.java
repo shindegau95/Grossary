@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -24,6 +26,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -71,7 +74,7 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     public NestedScrollView bottomSheet;
     public BottomSheetBehavior behavior;
     private AppBarLayout appBarLayout;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     private Handler handler;
     private ProgressDialog mProgressDialog;
 
@@ -106,7 +109,8 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
 
         if((GrossaryApplication.getInstance().getShoppingListQuantities() == null)){
             //if not there in pref, try to update the shoppinglist as it is
-            Log.d("HELLO", "started");
+
+            Log.d("HELLO", "started here in side");
             CallServer.updateShoppingList(this);//check here
             GrossaryApplication.getInstance().setShoppingListQuantities();
             //write code here for showing async task
@@ -119,11 +123,12 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
             noShoppingListItems = false;
         }
 
+
         category = getIntent().getIntExtra(EXTRA_CHOICE, 1);
         if(category == 0 && noShoppingListItems){
             Toast.makeText(getApplicationContext(), String.valueOf(category),Toast.LENGTH_SHORT).show();
             setContentView(R.layout.activity_no_items_in_shopping_list);
-
+            /*new LoadShoppingList(this).execute();*/
         }
         else
         {
@@ -419,4 +424,35 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     public RecyclerView.Adapter getAdapter() {
         return mAdapter;
     }
+
+    /*public class LoadShoppingList extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog progressDialog;
+        private Context mContext;
+
+        public LoadShoppingList(Context mContext){
+            super();
+            this.mContext = mContext;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(progressDialog != null)
+                progressDialog.dismiss();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(mContext,
+                    "ProgressDialog",
+                    "Wait ");
+        }
+    }*/
 }

@@ -23,6 +23,20 @@ public class Parser {
         return (ArrayList) l;
     }
 
+    public static ArrayList parseRecipeList(String s){
+        s = removeBrackets(s);
+        if(s==null || s.isEmpty()){
+            return null;
+        }
+        List<Integer> l = new ArrayList<>();
+        Scanner sc = new Scanner(s);
+        sc.useDelimiter(", ");
+        while(sc.hasNext()) {
+            l.add(Integer.parseInt(sc.next()));
+        }
+        return (ArrayList) l;
+    }
+
     public static String removeBrackets(String s) {
         if(s == null || s.isEmpty()){
             return null;
