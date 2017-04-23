@@ -1,6 +1,5 @@
 package com.pkg.android.grossary.navigation.Customer;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,20 +19,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.pkg.android.grossary.Adapter.CustomerCategoryProductAdapter;
-import com.pkg.android.grossary.Adapter.ShoppingListAdapter;
+import com.pkg.android.grossary.Adapter.Customer.CategoryProductAdapter;
+import com.pkg.android.grossary.Adapter.Customer.ShoppingListAdapter;
+import com.pkg.android.grossary.Adapter.retailer.RetailExpandableAdapter;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.Labs.CerealLab;
 import com.pkg.android.grossary.Labs.DairyLab;
@@ -44,8 +44,9 @@ import com.pkg.android.grossary.Labs.ShoppingListLab;
 import com.pkg.android.grossary.Labs.VegetablesLab;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
-import com.pkg.android.grossary.other.BGTask;
+import com.pkg.android.grossary.navigation.ViewCartActivity;
 import com.pkg.android.grossary.other.CallServer;
+import com.pkg.android.grossary.other.DividerItemDecoration;
 import com.pkg.android.grossary.other.GridSpacingItemDecoration;
 import com.pkg.android.grossary.other.Session;
 
@@ -63,11 +64,11 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
 
     private static final String TAG = "cwpla";
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private static RecyclerView.Adapter mAdapter;
     private List<CartItem> mCartItemList;
     private FloatingActionButton cartfab;
     private ButtonBarLayout bottomButton;
-    private ToggleButton selectButton;
+    private static ToggleButton selectButton;
     boolean noShoppingListItems = false;
     private static final String EXTRA_CHOICE = "com.pkg.android.grossary.choice";
     private List<Boolean> selectedList;
@@ -76,7 +77,7 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
     private AppBarLayout appBarLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Handler handler;
-    private ProgressDialog mProgressDialog;
+    private ProgressDialog progressDialog;
 
     //makes independent of caller activity
     public static Intent newIntent(Context packageContext, int category) {
@@ -105,15 +106,13 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
         });
 */
 
+
         GrossaryApplication.getInstance().setShoppingListQuantities();
 
         if((GrossaryApplication.getInstance().getShoppingListQuantities() == null)){
             //if not there in pref, try to update the shoppinglist as it is
 
-            Log.d("HELLO", "started here in side");
-            CallServer.updateShoppingList(this);//check here
-            GrossaryApplication.getInstance().setShoppingListQuantities();
-            //write code here for showing async task
+            new LoadShoppingList().execute();
         }
 
         if(GrossaryApplication.getInstance().getShoppingListQuantities() == null){
@@ -195,7 +194,7 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
                 mRecyclerView.setAdapter(mAdapter);
             }
             else {
-                mAdapter = new CustomerCategoryProductAdapter(this, mCartItemList, shoppingCart, this);
+                mAdapter = new CategoryProductAdapter(this, mCartItemList, shoppingCart, this);
 
 
                 RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
@@ -421,38 +420,35 @@ public class CategoryWiseProductListActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public RecyclerView.Adapter getAdapter() {
+    public static RecyclerView.Adapter getAdapter() {
         return mAdapter;
     }
 
-    /*public class LoadShoppingList extends AsyncTask<Void, Void, Void> {
-        private ProgressDialog progressDialog;
-        private Context mContext;
+    private class LoadShoppingList extends AsyncTask<Void, Void, Void> {
 
-        public LoadShoppingList(Context mContext){
-            super();
-            this.mContext = mContext;
-        }
         @Override
         protected Void doInBackground(Void... voids) {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            CallServer.updateShoppingList(CategoryWiseProductListActivity.this);//check here
+            GrossaryApplication.getInstance().setShoppingListQuantities();
+
             return null;
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if(progressDialog != null)
-                progressDialog.dismiss();
         }
 
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(mContext,
-                    "ProgressDialog",
-                    "Wait ");
+            progressDialog = ProgressDialog.show(CategoryWiseProductListActivity.this,
+                    "Loading Shopping List",
+                    "Please Wait");
         }
-    }*/
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+        }
+    }
+
+
+    public static ToggleButton getSelectButton() {
+        return selectButton;
+    }
 }

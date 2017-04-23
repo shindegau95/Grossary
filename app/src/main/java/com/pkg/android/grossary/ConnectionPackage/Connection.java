@@ -45,7 +45,7 @@ public class Connection {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(context, "That didn't work!..", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "That didn't work!", Toast.LENGTH_LONG).show();
                         Log.d("Connection", volleyError.toString());
                     }
                 }
@@ -78,7 +78,9 @@ public class Connection {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(context, "That didn't work!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "URL = "+url, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Get didn't work!", Toast.LENGTH_LONG).show();
+                        Log.d("Connection", volleyError.toString());
                     }
                 }
         );

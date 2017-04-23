@@ -1,4 +1,4 @@
-package com.pkg.android.grossary.startScreenActivities;
+package com.pkg.android.grossary.navigation.startScreenActivities;
 
 
 import android.content.Intent;

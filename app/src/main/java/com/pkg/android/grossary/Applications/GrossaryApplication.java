@@ -2,7 +2,6 @@ package com.pkg.android.grossary.Applications;
 
 import android.app.Application;
 
-import com.pkg.android.grossary.Adapter.RetailListParent;
 import com.pkg.android.grossary.ConnectionPackage.ConnectivityReceiver;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.other.Parser;
@@ -22,6 +21,9 @@ public class GrossaryApplication extends Application {
     private List<CartItem> mCart;
     private List<Integer> ShoppingListQuantities;
     private ArrayList<Integer> recipeList;
+    private ArrayList<Integer> currstocklist;
+    private ArrayList<Integer> expstocklist;
+    private boolean isLoading;
 
     @Override
     public void onCreate() {
@@ -77,5 +79,29 @@ public class GrossaryApplication extends Application {
 
     public void setRecipeList() {
         recipeList = Parser.parseRecipeList(Session.getRecipeListString(this));;
+    }
+
+    public ArrayList<Integer> getCurrstocklist() {
+        return currstocklist;
+    }
+
+    public void setCurrstocklist() {
+        this.currstocklist = Parser.parseStockList(Session.getCurrStockListString(this));
+    }
+
+    public ArrayList<Integer> getExpstocklist() {
+        return expstocklist;
+    }
+
+    public void setExpstocklist() {
+        this.expstocklist = Parser.parseStockList(Session.getExpStockListString(this));
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
     }
 }

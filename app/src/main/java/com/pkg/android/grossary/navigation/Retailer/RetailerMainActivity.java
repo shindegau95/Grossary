@@ -1,7 +1,9 @@
 package com.pkg.android.grossary.navigation.Retailer;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -18,14 +20,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.R;
-import com.pkg.android.grossary.navigation.Customer.ViewCartActivity;
+import com.pkg.android.grossary.navigation.ViewCartActivity;
 import com.pkg.android.grossary.navigation.AboutUsFragment;
-import com.pkg.android.grossary.startScreenActivities.LoginActivity;
+import com.pkg.android.grossary.navigation.startScreenActivities.LoginActivity;
+import com.pkg.android.grossary.other.CallServer;
+import com.pkg.android.grossary.other.Session;
+
+import java.util.ArrayList;
 
 /**
  * Created by GAURAV on 06-03-2017.
@@ -66,10 +74,16 @@ public class RetailerMainActivity extends AppCompatActivity  {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retailer_main);
+
+        GrossaryApplication.getInstance().setLoading(false);
+        //new LoadStock().execute();
+
+
 
         auth = FirebaseAuth.getInstance();
 
@@ -147,7 +161,7 @@ public class RetailerMainActivity extends AppCompatActivity  {
      * Returns respected fragment that user
      * selected from navigation menu
      */
-    private void loadHomeFragment() {
+    public void loadHomeFragment() {
         // selecting appropriate nav menu item
         selectNavMenu();
 
@@ -350,6 +364,9 @@ public class RetailerMainActivity extends AppCompatActivity  {
             Intent i = getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage( getBaseContext().getPackageName() );
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Session.removeCurrStockList(this);
+            Session.removeExpStockList(this);
+
             startActivity(i);
             signOut();
             return true;
@@ -385,6 +402,7 @@ public class RetailerMainActivity extends AppCompatActivity  {
             auth.removeAuthStateListener(authListener);
         }
     }
+
 
 
 }

@@ -1,10 +1,7 @@
 package com.pkg.android.grossary.Labs;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.pkg.android.grossary.Adapter.ShoppingListAdapter;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.model.Product;

@@ -18,23 +18,23 @@
         <activity android:name=".navigation.Retailer.RetailerMainActivity">
 
         </activity>
-        <activity android:name=".startScreenActivities.SignUpActivity">
+        <activity android:name=".navigation.startScreenActivities.SignUpActivity">
 
         </activity>
-        <activity android:name=".startScreenActivities.ResetPasswordActivity">
+        <activity android:name=".navigation.startScreenActivities.ResetPasswordActivity">
 
         </activity>
         <activity android:name=".navigation.Customer.CategoryWiseProductListActivity">
 
         </activity>
-        <activity android:name=".navigation.Customer.ViewCartActivity">
+        <activity android:name=".navigation.ViewCartActivity">
 
         </activity>
-        <activity android:name=".startScreenActivities.LoginActivity" android:label="@string/app_name">
+        <activity android:name=".navigation.startScreenActivities.LoginActivity" android:label="@string/app_name">
 
         </activity>
         <activity
-            android:name=".startScreenActivities.SplashScreen"
+            android:name=".navigation.startScreenActivities.SplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" >

@@ -1,11 +1,5 @@
 package com.pkg.android.grossary.model;
 
-import android.content.SharedPreferences;
-
-import com.pkg.android.grossary.Adapter.RetailListParent;
-
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * Created by GAURAV on 10-02-2017.
  */

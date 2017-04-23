@@ -1,10 +1,9 @@
-package com.pkg.android.grossary.Adapter;
+package com.pkg.android.grossary.Adapter.retailer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +11,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
-import com.bumptech.glide.Glide;
+import com.pkg.android.grossary.model.RetailList;
+import com.pkg.android.grossary.model.RetailListParent;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
-import com.pkg.android.grossary.Labs.RetailLab;
 import com.pkg.android.grossary.R;
-import com.pkg.android.grossary.Adapter.retailer.RetailChildViewHolder;
-import com.pkg.android.grossary.Adapter.retailer.RetailParentViewHolder;
-import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.other.CircleTransform;
 
 import java.util.List;
@@ -45,6 +40,14 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mCartItemProductList = parentList;
+    }
+
+    public List<RetailListParent> getCartItemProductList() {
+        return mCartItemProductList;
+    }
+
+    public void setCartItemProductList(List<RetailListParent> cartItemProductList) {
+        mCartItemProductList = cartItemProductList;
     }
 
     @NonNull

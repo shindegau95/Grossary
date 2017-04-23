@@ -1,6 +1,6 @@
 package com.pkg.android.grossary.navigation.Customer;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -27,10 +27,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.navigation.AboutUsFragment;
-import com.pkg.android.grossary.other.BGTask;
-import com.pkg.android.grossary.other.CallServer;
+import com.pkg.android.grossary.navigation.ViewCartActivity;
 import com.pkg.android.grossary.other.Session;
-import com.pkg.android.grossary.startScreenActivities.LoginActivity;
+import com.pkg.android.grossary.navigation.startScreenActivities.LoginActivity;
 
 public class CustomerMainActivity extends AppCompatActivity  {
 
@@ -44,6 +43,7 @@ public class CustomerMainActivity extends AppCompatActivity  {
     private FloatingActionButton fab;
     private ImageView imgNavHeaderBg;
     private ImageView imgProfile;
+    private ProgressDialog progressDialog;
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
@@ -84,6 +84,9 @@ public class CustomerMainActivity extends AppCompatActivity  {
                 }
             }
         };
+
+
+
 
         Log.d("LOGIN", String.valueOf(Session.getUserId(CustomerMainActivity.this)));
         toolbar = (Toolbar) findViewById(R.id.toolbar);

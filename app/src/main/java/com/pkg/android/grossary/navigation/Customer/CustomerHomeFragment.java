@@ -1,25 +1,20 @@
 package com.pkg.android.grossary.navigation.Customer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.pkg.android.grossary.Adapter.CategoryAdapter;
-import com.pkg.android.grossary.Applications.GrossaryApplication;
+import com.pkg.android.grossary.Adapter.Customer.CategoryAdapter;
 import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.Category;
-import com.pkg.android.grossary.other.CallServer;
 
 /**
  * Created by GAURAV on 30-01-2017.

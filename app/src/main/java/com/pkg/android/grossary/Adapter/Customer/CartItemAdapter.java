@@ -1,4 +1,4 @@
-package com.pkg.android.grossary.Adapter;
+package com.pkg.android.grossary.Adapter.Customer;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,7 +33,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
     @Override
     public void onBindViewHolder(CartItemHolder holder, int position) {
         final CartItem cartItem = mCartItemList.get(position);
-        Log.d(TAG, "prd = " +cartItem.getProduct().getProduct_name());
         holder.title.setText(cartItem.getProduct().getProduct_name());
         holder.quantity.setText(String.valueOf(cartItem.getCartquantity()));
         int totalprice_peritem = cartItem.getCartquantity() * cartItem.getProduct().getPrice();
@@ -42,7 +41,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "size = " +mCartItemList.size());
         return mCartItemList.size();
     }
 

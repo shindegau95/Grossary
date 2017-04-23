@@ -37,13 +37,42 @@ public class Parser {
         return (ArrayList) l;
     }
 
+    public static ArrayList parseStockList(String s){
+        s = removeBrackets(s);
+        if(s==null || s.isEmpty()){
+            return null;
+        }
+        List<Integer> l = new ArrayList<>();
+        Scanner sc = new Scanner(s);
+        sc.useDelimiter(", ");
+        String scint;
+        while(sc.hasNext()) {
+            scint = removeQuotes(sc.next());
+            l.add(Integer.parseInt(scint));
+        }
+        return (ArrayList) l;
+    }
+
+    private static String removeQuotes(String s) {
+        if(s == null || s.isEmpty()){
+            return null;
+        }
+        StringBuffer sb = new StringBuffer(s);
+
+        sb.deleteCharAt(0);
+        sb.deleteCharAt(sb.length()-1);
+        return sb.toString();
+    }
+
     public static String removeBrackets(String s) {
         if(s == null || s.isEmpty()){
             return null;
         }
         StringBuffer sb = new StringBuffer(s);
-        sb.deleteCharAt(0);
-        sb.deleteCharAt(sb.length()-1);
+        if(sb.charAt(0)=='[')
+            sb.deleteCharAt(0);
+        if(sb.charAt(sb.length()-1)==']')
+            sb.deleteCharAt(sb.length()-1);
         return sb.toString();
     }
 }

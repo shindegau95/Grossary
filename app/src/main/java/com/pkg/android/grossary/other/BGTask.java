@@ -1,32 +1,9 @@
 package com.pkg.android.grossary.other;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.pkg.android.grossary.Applications.GrossaryApplication;
-import com.pkg.android.grossary.R;
-import com.pkg.android.grossary.navigation.Customer.CategoryWiseProductListActivity;
-import com.pkg.android.grossary.navigation.Customer.CustomerHomeFragment;
-import com.pkg.android.grossary.navigation.Customer.CustomerMainActivity;
-import com.pkg.android.grossary.startScreenActivities.LoginActivity;
-
-import java.util.Map;
-
-import static com.pkg.android.grossary.other.Session.SESSIONPREF;
-import static com.pkg.android.grossary.other.Session.USERID;
 
 /**
  * Created by GAURAV on 01-04-2017.

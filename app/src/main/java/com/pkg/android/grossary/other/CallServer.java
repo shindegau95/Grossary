@@ -1,26 +1,31 @@
 package com.pkg.android.grossary.other;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.app.admin.SystemUpdatePolicy;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.pkg.android.grossary.Adapter.CustomerCategoryProductAdapter;
-import com.pkg.android.grossary.Adapter.RecipeAdapter;
+import com.pkg.android.grossary.Adapter.Customer.CategoryProductAdapter;
+import com.pkg.android.grossary.Adapter.retailer.RetailExpandableAdapter;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.ConnectionPackage.ASyncResponse;
 import com.pkg.android.grossary.ConnectionPackage.Connection;
 import com.pkg.android.grossary.R;
-import com.pkg.android.grossary.navigation.Customer.CategoryWiseProductListActivity;
-import com.pkg.android.grossary.navigation.Customer.ViewCartActivity;
+import com.pkg.android.grossary.navigation.Retailer.RetailerHomeFragment;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by GAURAV on 20-03-2017.
@@ -29,88 +34,134 @@ import static android.content.Context.MODE_PRIVATE;
 public class CallServer {
     private static final String TAG = "GCallServer";
 
-    public static void checkout(final Activity activity, JSONObject jsonprodlist){
-        //start
-        Intent i = activity.getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage( activity.getBaseContext().getPackageName() );
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    public static void transaction(final Activity activity, JSONObject jsonprodlist){
+        //this is to enter a transaction as record in the csv at server
+
 
         Context context=activity.getApplicationContext();
         ASyncResponse a=new ASyncResponse() {
             @Override
             public void processFinish(String output) {   // Server will return the output & store it in the string variable 'output'
-                Log.e("param", output);
-                Toast.makeText(activity, output, Toast.LENGTH_LONG).show();
+                Log.e("Call Server","transaction, output = "+ output);
+                GrossaryApplication.getInstance().setLoading(false);
             }
         };
+
         String ip = context.getString(R.string.ip_addr);
-        Connection c=new Connection(ip + "/cgi-bin/customer/index1.php",context);  //For transaction checkout
-        // Make sure you change the url accordingly
+        Connection c=new Connection(ip + "/cgi-bin/customer/index1.php",context);  //For transaction index1
         String jsonString = jsonprodlist.toString();
-        Toast.makeText(activity.getApplicationContext(), String.valueOf(jsonString),Toast.LENGTH_SHORT).show();
+        String id = String.valueOf(Session.getUserId(context));c.onPost(id+jsonString, a);
 
-        String id = String.valueOf(Session.getUserId(context));
-        // String of id will be the id of the customer
-        c.onPost(id+jsonString, a);
-        // 'Connection to the server' code ends here
-        //end
-        activity.startActivity(i);
+
     }
-    public static void updateShoppingList(final Context context){
 
+    public static void checkout(final Activity activity, JSONObject jsonprodlist){
+        //this is to checkout
+        //for customer this decreases the curr_stock
+        //for retailer this increases the curr_stock
+
+        Context context=activity.getApplicationContext();
+        ASyncResponse a=new ASyncResponse() {
+            @Override
+            public void processFinish(String output) {   // Server will return the output & store it in the string variable 'output'
+                Log.e("Call Server","checkout, output = "+ output);
+                GrossaryApplication.getInstance().setLoading(false);
+            }
+        };
+
+        String ip = context.getString(R.string.ip_addr);
+        String id = String.valueOf(Session.getUserId(context));
+        Connection c;
+        if(id.equals("1")){
+            Session.removeCurrStockList(context);
+            Session.removeExpStockList(context);
+            c =new Connection(ip + "/cgi-bin/retailer/updateRetailer.php",context);  //For transaction transaction
+        }else{
+            c=new Connection(ip + "/cgi-bin/customer/updateCustomer.php",context);  //For transaction transaction
+        }
+        String jsonString = jsonprodlist.toString();
+        jsonString = jsonString.replace("\"","");
+
+        c.onPost(jsonString, a);
+    }
+
+    public static void updateShoppingList(final Context context){
+        //updating the shopping list for customer
 
         ASyncResponse a=new ASyncResponse() {
             @Override
             public void processFinish(String output) {
-                // Server will return the output & store it in the string variable 'output'
-                Log.d(TAG,"output + " +output);
+                Log.e("Call Server","updateShoppingList, output = "+ output);
 
-                //Toast.makeText(context, "from server, output = " + output, Toast.LENGTH_LONG).show();
                 Session.setShoppingListString(context, output);
-
                 GrossaryApplication.getInstance().setShoppingListQuantities();
-                Log.d(TAG, "After updating, list = " + String.valueOf(GrossaryApplication.getInstance().getShoppingListQuantities()));
             }
         };
+
         String ip = context.getString(R.string.ip_addr);
         Connection c=new Connection(ip + "/cgi-bin/customer/index.php",context);  //For personalized recommendation,the php file is index.php
-        // Make sure you change the url accordingly
         String id = String.valueOf(Session.getUserId(context));
 
-        // String of id will be the id of the customer
         c.onPost(id, a);
-        // 'Connection to the server' code ends here
-        //end
-
     }
 
-    public static void updateRecipeList(final Activity activity, ArrayList<Integer> prodlist){
-        //start
+    public static void updateRecipeList(final Activity activity, ArrayList<Integer> prodlist, final ProgressBar progressBar, final RecyclerView mRecipeRecyclerView){
+        //updating the recipelist for customer
+
         final Context context=activity.getApplicationContext();
         ASyncResponse a=new ASyncResponse() {
             @Override
             public void processFinish(String output) {   // Server will return the output & store it in the string variable 'output'
-                Log.e("RECIPE", output);
-                //Toast.makeText(activity, output, Toast.LENGTH_LONG).show();
-                Session.setRecipeListString(context, output);
+                Log.e("Call Server","updateRecipeList, output = "+ output);
 
+                Session.setRecipeListString(context, output);
                 GrossaryApplication.getInstance().setRecipeList();
 
-                CustomerCategoryProductAdapter.getRecipies();
+                CategoryProductAdapter.getRecipies();
+                progressBar.setVisibility(View.GONE);
+                mRecipeRecyclerView.setVisibility(View.VISIBLE);
             }
         };
         String ip = context.getString(R.string.ip_addr);
         Connection c=new Connection(ip + "/cgi-bin/customer/fp-grwoth/python-fp-growth-master/connect.php",context);  //For personalized recommendation,the php file is index.php
-        // Make sure you change the url accordingly/
-
         String prodListString = prodlist.toString();
         prodListString = prodListString.replace(" ","");
 
-        // String of id will be the id of the customer
-
-
         c.onPost(prodListString, a);
-        // 'Connection to the server' code ends here
-        //end
+    }
+
+    public static void updateStock(final Activity activity){
+        //update stock for retailer
+
+        final Context context = activity.getApplicationContext();
+        ASyncResponse a=new ASyncResponse() {
+            @Override
+            public void processFinish(String output) {   // Server will return the output & store it in the string variable 'output'
+
+                Log.e("Call Server","updateStock, output = "+ output);
+
+                String s = Parser.removeBrackets(output);
+                Scanner sc = new Scanner(s);
+                sc.useDelimiter("\\], \\[");
+
+                String curr_stock_string = Parser.removeBrackets(sc.next());
+                Log.d("Call Server STOCK","curr="+curr_stock_string);
+                Session.setCurrStockliststring(context, curr_stock_string);
+                GrossaryApplication.getInstance().setCurrstocklist();
+
+                String exp_stock_string = Parser.removeBrackets(sc.next());
+                Log.d("Call Server STOCK","exp="+exp_stock_string);
+                Session.setExpStockListString(context, exp_stock_string);
+                GrossaryApplication.getInstance().setExpstocklist();
+
+                GrossaryApplication.getInstance().setLoading(false);
+
+            }
+        };
+
+        String ip = context.getString(R.string.ip_addr);
+        Connection c=new Connection(ip + "/cgi-bin/customer/fetchData.php",context);
+
+        c.onGet(a);
     }
 }

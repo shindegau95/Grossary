@@ -1,6 +1,5 @@
-package com.pkg.android.grossary.Adapter;
+package com.pkg.android.grossary.Adapter.Customer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.BottomSheetBehavior;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
@@ -29,8 +27,6 @@ import com.pkg.android.grossary.model.Recipe;
 import com.pkg.android.grossary.navigation.Customer.CategoryWiseProductListActivity;
 import com.pkg.android.grossary.other.CallServer;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +34,7 @@ import java.util.List;
  * Created by GAURAV on 31-01-2017.
  */
 
-public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<CustomerCategoryProductAdapter.ProductViewHolder> {
+public class CategoryProductAdapter extends RecyclerView.Adapter<CategoryProductAdapter.ProductViewHolder> {
 
     private static Context mContext;
     private List<CartItem> mCartItemProductList;
@@ -50,7 +46,7 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
     private static RecipeAdapter mRecipeAdapter;
 
     //constructor
-    public CustomerCategoryProductAdapter(Context context, List<CartItem> cartItemList, GrossaryApplication ShoppingCart, CategoryWiseProductListActivity categoryWiseProductListActivity) {
+    public CategoryProductAdapter(Context context, List<CartItem> cartItemList, GrossaryApplication ShoppingCart, CategoryWiseProductListActivity categoryWiseProductListActivity) {
         mContext = context;
         mCartItemProductList = cartItemList;
         this.ShoppingCart = ShoppingCart;
@@ -126,6 +122,7 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
                 new LoadRecipes().execute();
                 getRecipies();
                 mRecipeAdapter.notifyDataSetChanged();
+
                 changeBottomSheetState();
                 notifyDataSetChanged();
             }
@@ -139,6 +136,11 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
                     ShoppingCart.removeFromCart(item);
                 }
                 disableInShoppingList(position+1);  //vvip step
+
+                new LoadRecipes().execute();
+                getRecipies();
+                mRecipeAdapter.notifyDataSetChanged();
+
                 changeBottomSheetState();
                 notifyDataSetChanged();
             }
@@ -216,13 +218,12 @@ public class CustomerCategoryProductAdapter extends RecyclerView.Adapter<Custome
         @Override
         protected Void doInBackground(Void... voids) {
             ArrayList<Integer> prodlist = prepareProdList();
-            CallServer.updateRecipeList(mParentActivity, prodlist);
+            CallServer.updateRecipeList(mParentActivity, prodlist, mProgressBar, mRecipeRecyclerView);
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            mProgressBar.setVisibility(View.GONE);
-            mRecipeRecyclerView.setVisibility(View.VISIBLE);
+            
         }
 
         @Override

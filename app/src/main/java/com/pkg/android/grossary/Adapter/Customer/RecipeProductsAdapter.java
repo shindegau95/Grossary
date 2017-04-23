@@ -1,4 +1,4 @@
-package com.pkg.android.grossary.Adapter;
+package com.pkg.android.grossary.Adapter.Customer;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatButton;

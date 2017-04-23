@@ -1,10 +1,8 @@
 package com.pkg.android.grossary.other;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,19 +14,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pkg.android.grossary.Applications.GrossaryApplication;
 import com.pkg.android.grossary.Labs.RecipeLab;
+import com.pkg.android.grossary.Labs.RetailLab;
 import com.pkg.android.grossary.Labs.ShoppingListLab;
-import com.pkg.android.grossary.model.CartItem;
-import com.pkg.android.grossary.model.Recipe;
-import com.pkg.android.grossary.navigation.Customer.CustomerMainActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-
-import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -41,6 +30,8 @@ public class Session {
     public static final String USERID = "useridkey";
     private static final String SHOPPINGLISTSTRING = "shoppingListString";
     private static final String RECIPELISTSTRING = "recipeliststring";
+    private static final String CURRSTOCKLISTSTRING = "currstockliststring";
+    private static final String EXPSTOCKLISTSTRING = "expstockliststring";
 
     public static void setUserId(final Context context, final FirebaseAuth auth){
         removePreviousUserId(context);
@@ -48,17 +39,17 @@ public class Session {
         dbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Toast.makeText(context, "WAIT", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "WAIT", Toast.LENGTH_SHORT).show();
                 Map<String, Object> keymap = (Map<String, Object>) dataSnapshot.getValue();
                 for (Map.Entry<String, Object> entry:keymap.entrySet()) {
                     Map<String, String> mailmap = (Map<String, String>) entry.getValue();
                     SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
                     if(String.valueOf(mailmap.get("emailid")).equals(auth.getCurrentUser().getEmail())){
-                        Log.d(TAG,"Changed userid = "+ String.valueOf(mailmap.get("userid")));
+                        //Log.d(TAG,"Changed userid = "+ String.valueOf(mailmap.get("userid")));
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putInt(USERID, Integer.parseInt(String.valueOf(mailmap.get("userid"))));
                         editor.commit();
-                        Log.d(TAG,"From Preferences, userid = " + String.valueOf(sharedpreferences.getInt(USERID,0)));
+                        //Log.d(TAG,"From Preferences, userid = " + String.valueOf(sharedpreferences.getInt(USERID,0)));
 
 
                         //because for the first time we need id to be set otherwise it will fetch for 0
@@ -75,6 +66,7 @@ public class Session {
 
                 }
                 Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
+                GrossaryApplication.getInstance().setLoading(false);
             }
 
             @Override
@@ -140,6 +132,50 @@ public class Session {
         SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = pref.edit();
         editor.remove(RECIPELISTSTRING);
+        editor.commit();
+    }
+
+    public static String getCurrStockListString(final Context context){
+        SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        String listString= sharedpreferences.getString(CURRSTOCKLISTSTRING,null);
+        return listString;
+    }
+
+    public static void setCurrStockliststring(final Context context, String output){
+        removeCurrStockList(context);
+        SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(CURRSTOCKLISTSTRING, output);
+        editor.commit();
+    }
+
+    public static void removeCurrStockList(Context context) {
+        RetailLab.makeListNull();
+        SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove(CURRSTOCKLISTSTRING);
+        editor.commit();
+    }
+
+    public static String getExpStockListString(final Context context){
+        SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        String listString= sharedpreferences.getString(EXPSTOCKLISTSTRING,null);
+        return listString;
+    }
+
+    public static void setExpStockListString(final Context context, String output){
+        removeExpStockList(context);
+        SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(EXPSTOCKLISTSTRING, output);
+        editor.commit();
+    }
+
+    public static void removeExpStockList(Context context) {
+        RetailLab.makeListNull();
+        SharedPreferences pref = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove(EXPSTOCKLISTSTRING);
         editor.commit();
     }
 }

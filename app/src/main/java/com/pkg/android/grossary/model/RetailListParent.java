@@ -1,9 +1,10 @@
-package com.pkg.android.grossary.Adapter;
+package com.pkg.android.grossary.model;
+
+import android.util.Log;
 
 import com.bignerdranch.expandablerecyclerview.model.Parent;
-import com.pkg.android.grossary.model.CartItem;
-import com.pkg.android.grossary.model.Product;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -116,18 +117,26 @@ public class RetailListParent implements Parent<RetailList>,Comparable<RetailLis
         return false;
     }
 
-    public void updateActualStock(int days_past, int days_left,int previous_stock) {
+    public void updateActualStock() {
         if(getCurrent_stock()<getExpected_stock()){
             //Scenario 1
             setActual_stock(getExpected_stock()-getCurrent_stock());
-            setColorval(getActual_stock()/getExpected_stock());
+            setColorval((double)getActual_stock()/getExpected_stock());
         }else if(getCurrent_stock()>=getExpected_stock()){
+            //Scenario 2
             setActual_stock(0);
             setColorval(0);
         }else if(getCurrent_stock()==0){
-            //setActual_stock(997);
-            setActual_stock((int)(previous_stock*days_left/days_past));
-            setColorval(1 - getActual_stock()/getExpected_stock());
+            //Scenario 3
+            //int days_past, int days_left,int previous_stock
+            Calendar cal = Calendar.getInstance();
+            int days_past = cal.get(Calendar.DAY_OF_MONTH);
+            int monthMaxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            int days_left = monthMaxDays - days_past;
+
+            int previous_stock = 800;
+            setActual_stock((int)((double)previous_stock*days_left/days_past));
+            setColorval((double)getActual_stock()/getExpected_stock()-1);
         }else {
             //kind of error
             setActual_stock(999);
@@ -142,8 +151,12 @@ public class RetailListParent implements Parent<RetailList>,Comparable<RetailLis
         //descending order
         //here we compare the color vals
         //because we have to consider the scaricty of the product and not the difference between C and A
-        return (int) (compareretailListParent.getColorval() - this.getColorval());
+        return (int) ((compareretailListParent.getColorval() - this.getColorval())*100);
     }
 
 
+    @Override
+    public String toString() {
+        return String.valueOf(colorval);
+    }
 }

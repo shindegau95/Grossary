@@ -3,8 +3,7 @@ package com.pkg.android.grossary.other;
 import android.content.Context;
 import android.util.Log;
 
-import com.pkg.android.grossary.Adapter.RetailList;
-import com.pkg.android.grossary.Adapter.RetailListParent;
+import com.pkg.android.grossary.model.RetailListParent;
 import com.pkg.android.grossary.Labs.CerealLab;
 import com.pkg.android.grossary.Labs.DairyLab;
 import com.pkg.android.grossary.Labs.DryFruitsLab;
@@ -79,7 +78,7 @@ public class CSVReader {
                     for (int i=1;i<count;i++){
                         Log.d(TAG, rowelement[i]);
                         ((RetailListParent)resultList.get(i-1)).setExpected_stock(Integer.parseInt(rowelement[i]));
-                        ((RetailListParent)resultList.get(i-1)).updateActualStock(10,20,800);
+                        ((RetailListParent)resultList.get(i-1)).updateActualStock();
                         //here 10 = days past, 20 = days left, 800 = previous_stock
                     }
                 }

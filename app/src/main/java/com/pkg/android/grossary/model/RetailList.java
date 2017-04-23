@@ -1,4 +1,4 @@
-package com.pkg.android.grossary.Adapter;
+package com.pkg.android.grossary.model;
 
 /**
  * Created by GAURAV on 06-03-2017.

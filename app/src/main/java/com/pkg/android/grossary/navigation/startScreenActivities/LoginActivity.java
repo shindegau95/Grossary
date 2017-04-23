@@ -1,8 +1,11 @@
-package com.pkg.android.grossary.startScreenActivities;
+package com.pkg.android.grossary.navigation.startScreenActivities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -47,6 +50,8 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
     private FirebaseAuth auth;
     private ProgressBar progressBar;
     private Button btnSignUp, btnLogin, btnReset;
+    private ProgressDialog progressDialog;
+    Handler handler;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -149,8 +154,11 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                                 }else{
                                     intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
                                 }
-                                startActivity(intent);
-                                finish();
+
+
+                                handler = new Handler(getMainLooper());
+                                new LoadID(intent).execute();
+
                             }
                         }else{
                             progressBar.setVisibility(View.GONE);
@@ -185,6 +193,57 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
             String msg = "Check Internet Connection";
             Snackbar snackbar = Snackbar.make(findViewById(R.id.linearLayout), msg, Snackbar.LENGTH_LONG);
             snackbar.show();
+        }
+    }
+
+    private class LoadID extends AsyncTask<Void, Void, Void> {
+
+        private Intent mIntent;
+
+        public LoadID(Intent intent) {
+            super();
+            mIntent = intent;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+            GrossaryApplication.getInstance().setLoading(true);
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //Log.d("Login", "Login");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.show(LoginActivity.this,
+                                    "Loading Stock",
+                                    "Please Wait");
+                        }
+                    });
+                    while(GrossaryApplication.getInstance().isLoading()) {
+                        Log.d("Login","loading");
+
+                    }
+                }
+            }).start();
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progressBar.setVisibility(View.GONE);
+            startActivity(mIntent);
+            finish();
         }
     }
 }
