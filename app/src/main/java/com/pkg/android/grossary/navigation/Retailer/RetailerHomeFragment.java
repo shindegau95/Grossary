@@ -71,7 +71,6 @@ public class RetailerHomeFragment extends Fragment{
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-
                                         refresh();
                                     }
                                 }
@@ -81,8 +80,8 @@ public class RetailerHomeFragment extends Fragment{
 
         return rootView;
     }
-    
-    
+
+
 
     private void refresh() {
         swipeRefreshLayout.setRefreshing(true);

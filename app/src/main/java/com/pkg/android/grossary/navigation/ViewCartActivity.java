@@ -236,7 +236,8 @@ public class ViewCartActivity extends AppCompatActivity {
             Intent i = ViewCartActivity.this.getBaseContext().getPackageManager()
                     .getLaunchIntentForPackage( ViewCartActivity.this.getBaseContext().getPackageName() );
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+            if (progressDialog!=null)
+                progressDialog.dismiss();
             startActivity(i);
         }
 

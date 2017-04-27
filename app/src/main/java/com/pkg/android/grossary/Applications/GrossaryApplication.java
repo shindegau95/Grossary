@@ -104,4 +104,6 @@ public class GrossaryApplication extends Application {
     public void setLoading(boolean loading) {
         isLoading = loading;
     }
+
+
 }

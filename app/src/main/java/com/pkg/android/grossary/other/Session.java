@@ -34,23 +34,23 @@ public class Session {
     private static final String EXPSTOCKLISTSTRING = "expstockliststring";
 
     public static void setUserId(final Context context, final FirebaseAuth auth){
+
         removePreviousUserId(context);
         DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("users");
+
         dbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Toast.makeText(context, "WAIT", Toast.LENGTH_SHORT).show();
+
                 Map<String, Object> keymap = (Map<String, Object>) dataSnapshot.getValue();
                 for (Map.Entry<String, Object> entry:keymap.entrySet()) {
                     Map<String, String> mailmap = (Map<String, String>) entry.getValue();
                     SharedPreferences sharedpreferences = context.getSharedPreferences(SESSIONPREF, Context.MODE_MULTI_PROCESS);
                     if(String.valueOf(mailmap.get("emailid")).equals(auth.getCurrentUser().getEmail())){
-                        //Log.d(TAG,"Changed userid = "+ String.valueOf(mailmap.get("userid")));
+
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putInt(USERID, Integer.parseInt(String.valueOf(mailmap.get("userid"))));
                         editor.commit();
-                        //Log.d(TAG,"From Preferences, userid = " + String.valueOf(sharedpreferences.getInt(USERID,0)));
-
 
                         //because for the first time we need id to be set otherwise it will fetch for 0
                         GrossaryApplication.getInstance().setShoppingListQuantities();
@@ -58,15 +58,15 @@ public class Session {
                         if((GrossaryApplication.getInstance().getShoppingListQuantities() == null)){
                             //if not there in pref, try to update the shoppinglist as it is
 
-                            CallServer.updateShoppingList((Activity) context);//check here
+                            CallServer.updateShoppingList(context);//check here
                             GrossaryApplication.getInstance().setShoppingListQuantities();
                             //write code here for showing async task
                         }
                     }
 
                 }
-                Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
-                GrossaryApplication.getInstance().setLoading(false);
+                //Toast.makeText(context, "Done" + String.valueOf(Session.getUserId(context)), Toast.LENGTH_SHORT).show();
+
             }
 
             @Override

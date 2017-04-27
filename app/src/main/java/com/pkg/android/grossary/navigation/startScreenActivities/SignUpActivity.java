@@ -2,7 +2,9 @@ package com.pkg.android.grossary.navigation.startScreenActivities;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,6 +59,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     private SignInButton btnGoogleSignIn;
     long count;
     private DatabaseReference dbref;
+    private Handler handler;
 
 
     @Override
@@ -92,7 +96,8 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                signIn();
+                if(checkConnection())
+                    signIn();
             }
         });
         
@@ -139,7 +144,6 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                                 .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
-                                        //Toast.makeText(SignUpActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                         progressBar.setVisibility(View.GONE);
                                         // If sign in fails, display a message to the user. If sign in succeeds
                                         // the auth state listener will be notified and logic to handle the
@@ -193,9 +197,12 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
 
     }
 
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
+        //goes to onActivityResult
     }
 
     @Override
@@ -209,25 +216,46 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult: "+ result.isSuccess());
+
         if(result.isSuccess()){
             GoogleSignInAccount acct = result.getSignInAccount();
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             Log.d(TAG,"Successful Google sign In");
 
             Log.d(TAG, acct.getEmail() + " " +acct.getId() + " signed in");
-            firebaseAuthWithGoogle(acct);
+            checkIfExists(acct);
+
         }
     }
+    private void checkIfExists(final GoogleSignInAccount acct){
+        //checks if user is already present
+
+        final String mail = acct.getEmail();
+        auth.fetchProvidersForEmail(mail).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                if(task.isSuccessful()){
+                    ///////// getProviders() will return size 1. if email ID is available.
+                    task.getResult().getProviders();
+                    handler = new Handler(getApplicationContext().getMainLooper());
+                    new LoadID().execute();
+                }else{
+                    saveintofirebase(mail);
+                }
+
+                firebaseAuthWithGoogle(acct);
+            }
+        });
+    }
+
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        Log.d(TAG, acct.getIdToken() + " signed in");
+
         auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                //Log.d(TAG, "signInWithCredential:onComplete:"+task.isSuccessful());
 
                 if(!task.isSuccessful()){
                     Toast.makeText(SignUpActivity.this , "Authentication failed", Toast.LENGTH_SHORT).show();
@@ -244,6 +272,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
 
 
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -277,4 +306,44 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
             snackbar.show();
         }
     }
+
+    private class LoadID extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    while(Session.getUserId(SignUpActivity.this) == -1) {
+                        //wait till id is loaded
+                    }
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+
+                        }
+                    });
+
+                }
+            }).start();
+
+
+        }
+    }
+
 }

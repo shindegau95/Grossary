@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                                 }
 
 
-                                handler = new Handler(getMainLooper());
+                                handler = new Handler(getApplicationContext().getMainLooper());
                                 new LoadID(intent).execute();
 
                             }
@@ -214,7 +214,6 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
         @Override
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
-            GrossaryApplication.getInstance().setLoading(true);
         }
 
         @Override
@@ -222,24 +221,24 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //Log.d("Login", "Login");
+
+                    while(Session.getUserId(LoginActivity.this) == -1) {
+                        //wait till id is loaded
+                    }
+
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            progressDialog.show(LoginActivity.this,
-                                    "Loading Stock",
-                                    "Please Wait");
+                            progressBar.setVisibility(View.GONE);
+                            startActivity(mIntent);
+                            finish();
                         }
                     });
-                    while(GrossaryApplication.getInstance().isLoading()) {
-                        Log.d("Login","loading");
 
-                    }
                 }
             }).start();
-            progressBar.setVisibility(View.GONE);
-            startActivity(mIntent);
-            finish();
+
+
         }
     }
 }

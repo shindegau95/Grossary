@@ -31,7 +31,6 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
     LayoutInflater mInflater;
     GrossaryApplication ShoppingCart;
     private List<RetailListParent> mCartItemProductList;
-    private String TAG = "RetailAdapter";
     private Context mContext;
 
     public RetailExpandableAdapter(Context context, List<RetailListParent> parentList, GrossaryApplication ShoppingCart) {
@@ -42,13 +41,6 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
         mCartItemProductList = parentList;
     }
 
-    public List<RetailListParent> getCartItemProductList() {
-        return mCartItemProductList;
-    }
-
-    public void setCartItemProductList(List<RetailListParent> cartItemProductList) {
-        mCartItemProductList = cartItemProductList;
-    }
 
     @NonNull
     @Override
@@ -88,7 +80,7 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
         parentViewHolder.thumbnail.setImageBitmap(CircleTransform.getRoundedShape(CircleTransform.decodeFile(mContext,item.getProduct().getThumbnail()),200));
 
         //initialization
-        parentViewHolder.selectCheckBox.setOnCheckedChangeListener(null);
+        //parentViewHolder.selectCheckBox.setOnCheckedChangeListener(null);
         if(item.getCartItem().getCartquantity()>0){
             parentViewHolder.selectCheckBox.setEnabled(true);
         }else{
@@ -120,6 +112,8 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
     public void onBindChildViewHolder(@NonNull final RetailChildViewHolder childViewHolder, final int parentPosition, final int childPosition, @NonNull final RetailList child) {
         final RetailList item = (RetailList)getParentList().get(parentPosition).getChildList().get(0);
         final RetailListParent itemParent = getParentList().get(parentPosition);
+
+        childViewHolder.setIsRecyclable(false);
 
         childViewHolder.mTotalPrice.setText(mContext.getString(R.string.Rs)+String.valueOf(item.getTotalprice()));
         childViewHolder.mProductQuantity.setText(String.valueOf(item.getQuantity()));
@@ -180,6 +174,7 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
             }
         });
     }
+
 
 
 
