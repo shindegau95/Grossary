@@ -91,7 +91,7 @@ public class ViewCartActivity extends AppCompatActivity {
         updateUI();
 
         if(total>0)
-            totalprice.setText(String.valueOf(total));
+            totalprice.setText(getString(R.string.Rs)+String.valueOf(total));
         else
             setContentView(R.layout.activity_no_items_in_cart);
 
@@ -108,7 +108,7 @@ public class ViewCartActivity extends AppCompatActivity {
 
         if(mAdapter == null)
         {
-            mAdapter = new CartItemAdapter(cart);
+            mAdapter = new CartItemAdapter(cart, this);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());

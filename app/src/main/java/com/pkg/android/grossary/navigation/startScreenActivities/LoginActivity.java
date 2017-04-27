@@ -215,8 +215,10 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
         protected void onPreExecute() {
             progressBar.setVisibility(View.VISIBLE);
             GrossaryApplication.getInstance().setLoading(true);
+        }
 
-
+        @Override
+        protected void onPostExecute(Void aVoid) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -235,12 +237,6 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                     }
                 }
             }).start();
-
-
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
             progressBar.setVisibility(View.GONE);
             startActivity(mIntent);
             finish();

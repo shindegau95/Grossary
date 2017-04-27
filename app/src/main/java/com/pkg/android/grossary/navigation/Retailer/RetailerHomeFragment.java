@@ -75,8 +75,8 @@ public class RetailerHomeFragment extends Fragment{
                                         refresh();
                                     }
                                 }
-        );*/
-
+        );
+*/
         new LoadStock().execute();
 
         return rootView;
@@ -88,7 +88,6 @@ public class RetailerHomeFragment extends Fragment{
         swipeRefreshLayout.setRefreshing(true);
         Session.removeCurrStockList(getContext());
         new LoadStock().execute();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     public static ArrayList<RetailListParent> generateRetailList(Context context) {
@@ -128,7 +127,7 @@ public class RetailerHomeFragment extends Fragment{
         @Override
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(getActivity(),
-                    "Loading Stock",
+                    "Loading Retail Stock",
                     "Please Wait");
 
             if(Session.getCurrStockListString(getContext())==null || Session.getExpStockListString(getContext())==null){
@@ -161,15 +160,21 @@ public class RetailerHomeFragment extends Fragment{
 
         }
         retailExpandableAdapter = new RetailExpandableAdapter(context, RetailerHomeFragment.generateRetailList(context),GrossaryApplication.getInstance());
+
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-
                 mRecyclerView.setAdapter(retailExpandableAdapter);
             }
         });
-
         progressDialog.dismiss();
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
     }
 
 }

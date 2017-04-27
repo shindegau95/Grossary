@@ -1,5 +1,6 @@
 package com.pkg.android.grossary.Adapter.Customer;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +20,11 @@ import java.util.List;
 public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartItemHolder> {
     private static final String TAG = "CartItemAdapter";
     private List<CartItem> mCartItemList;
+    private Context mContext;
 
-    public CartItemAdapter(List<CartItem> cartItemList) {
+    public CartItemAdapter(List<CartItem> cartItemList, Context context) {
         mCartItemList = cartItemList;
+        mContext = context;
     }
 
     @Override
@@ -36,7 +39,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
         holder.title.setText(cartItem.getProduct().getProduct_name());
         holder.quantity.setText(String.valueOf(cartItem.getCartquantity()));
         int totalprice_peritem = cartItem.getCartquantity() * cartItem.getProduct().getPrice();
-        holder.price.setText(String.valueOf(totalprice_peritem));
+        holder.price.setText(mContext.getString(R.string.Rs) + String.valueOf(totalprice_peritem));
     }
 
     @Override

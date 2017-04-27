@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,7 +92,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         mRecipeProductsAdapter = new RecipeProductsAdapter(mContext, mRecipeProductsList, GrossaryApplication.getInstance(),mParentActivity.getAdapter());
 
-        RecyclerView.LayoutManager mRecipeProductLayoutManager = new GridLayoutManager(mContext, 2, GridLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager mRecipeProductLayoutManager = new GridLayoutManager(mContext, 2, LinearLayoutManager.VERTICAL, false);
         mRecipeProductsRecyclerView.setLayoutManager(mRecipeProductLayoutManager);
         //mRecipeProductsRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, GridSpacingItemDecoration.dpToPx(mContext, 10), true));
         mRecipeProductsRecyclerView.setItemAnimator(new DefaultItemAnimator());

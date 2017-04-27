@@ -62,4 +62,5 @@
     <string name="btn_sign_up">SIGN UP</string>
     <string name="ip_addr">http://35.189.135.24</string>
     <string name="action_remove_from_cart">Empty the Cart</string>
+    <string name="Rs">\u20B9</string>
 </resources>

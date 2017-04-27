@@ -89,7 +89,7 @@ public class CategoryProductAdapter extends RecyclerView.Adapter<CategoryProduct
         final CartItem item = mCartItemProductList.get(position);
         mRecipeRecyclerView = (RecyclerView)mParentActivity.findViewById(R.id.recipe_recycler_view);
         holder.product_name.setText(((Product)item.getProduct()).getProduct_name());
-        holder.price.setText(item.getProduct().getPrice() + "/" + item.getProduct().getProduct_unit());
+        holder.price.setText(mContext.getString(R.string.Rs)+item.getProduct().getPrice() + "/" + item.getProduct().getProduct_unit());
         holder.productquantity.setText(String.valueOf(item.getCartquantity()));
 
 

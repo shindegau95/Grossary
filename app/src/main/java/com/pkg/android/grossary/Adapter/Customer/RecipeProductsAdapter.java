@@ -71,7 +71,7 @@ public class RecipeProductsAdapter extends RecyclerView.Adapter<RecipeProductsAd
         final CartItem recipeProduct = mRecipeProductList.get(position);
 
         holder.recipe_product_name.setText(((Product)recipeProduct.getProduct()).getProduct_name());
-        holder.recipe_product_price.setText(recipeProduct.getProduct().getPrice() + "/" + recipeProduct.getProduct().getProduct_unit());
+        holder.recipe_product_price.setText(mContext.getString(R.string.Rs)+recipeProduct.getProduct().getPrice() + "/" + recipeProduct.getProduct().getProduct_unit());
         holder.recipe_product_productquantity.setText(String.valueOf(recipeProduct.getCartquantity()));
 
 

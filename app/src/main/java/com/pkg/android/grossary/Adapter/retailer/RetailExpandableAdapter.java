@@ -82,7 +82,7 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
         parentViewHolder.mProductTitle.setText(item.getProduct().getProduct_name());
 
         String price_per_unit = item.getProduct().getPrice() + "/" + item.getProduct().getProduct_unit();
-        parentViewHolder.mPricePerUnit.setText(price_per_unit);
+        parentViewHolder.mPricePerUnit.setText(mContext.getResources().getText(R.string.Rs)+price_per_unit);
 
         //Glide.with(mContext).load(item.getProduct().getThumbnail()).into(parentViewHolder.thumbnail);
         parentViewHolder.thumbnail.setImageBitmap(CircleTransform.getRoundedShape(CircleTransform.decodeFile(mContext,item.getProduct().getThumbnail()),200));
@@ -121,7 +121,7 @@ public class RetailExpandableAdapter extends ExpandableRecyclerAdapter<RetailLis
         final RetailList item = (RetailList)getParentList().get(parentPosition).getChildList().get(0);
         final RetailListParent itemParent = getParentList().get(parentPosition);
 
-        childViewHolder.mTotalPrice.setText(String.valueOf(item.getTotalprice()));
+        childViewHolder.mTotalPrice.setText(mContext.getString(R.string.Rs)+String.valueOf(item.getTotalprice()));
         childViewHolder.mProductQuantity.setText(String.valueOf(item.getQuantity()));
         childViewHolder.mProductQuantity.addTextChangedListener(new TextWatcher() {
             @Override

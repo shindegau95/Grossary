@@ -49,7 +49,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         final Boolean selected = selectedList.get(position);
         //Log.d(TAG, String.valueOf(item.getCartItem()));
         holder.product_name.setText(((Product)item.getProduct()).getProduct_name());
-        holder.price.setText(item.getProduct().getPrice() + "/" + item.getProduct().getProduct_unit());
+        holder.price.setText(mContext.getString(R.string.Rs)+item.getProduct().getPrice() + "/" + item.getProduct().getProduct_unit());
         holder.productquantity.setText(String.valueOf(item.getCartquantity()));
 
         //itialization
