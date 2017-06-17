@@ -40,6 +40,7 @@ public class CallServer {
         };
         Connection c=new Connection("http://35.189.136.28" + "/cgi-bin/customer/index1.php",context);  //For personalized recommendation,the php file is index.php
         // Make sure you change the url accordingly
+        String id = String.valueOf(Session.getUserId(activity.getApplicationContext()));
         String jsonString = jsonprodlist.toString();
         Toast.makeText(activity.getApplicationContext(), String.valueOf(jsonString),Toast.LENGTH_SHORT).show();
         // String of id will be the id of the customer
