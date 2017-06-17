@@ -17,19 +17,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.app.Activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pkg.android.grossary.Adapter.CartItemAdapter;
-
+import com.pkg.android.grossary.Applications.GrossaryApplication;		
+import com.pkg.android.grossary.ConnectionPackage.ASyncResponse;		
+import com.pkg.android.grossary.ConnectionPackage.Connection;		
+import com.pkg.android.grossary.R;
 import com.pkg.android.grossary.model.CartItem;
 import com.pkg.android.grossary.other.CallServer;
 import com.pkg.android.grossary.other.DividerItemDecoration;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +55,8 @@ public class ViewCartActivity extends AppCompatActivity {
     private int total;
     private TextView totalprice;
     private AppCompatButton checkout;
-
+    private DatabaseReference dbref;		
+    private JSONObject jsonprodlist;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -69,6 +70,8 @@ public class ViewCartActivity extends AppCompatActivity {
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+			CallServer.updateShoppingList(ViewCartActivity.this);		
+    CallServer.checkout(ViewCartActivity.this, jsonprodlist);
             }
         });
 
@@ -113,6 +116,11 @@ public class ViewCartActivity extends AppCompatActivity {
 
         cart = shoppingCart.getCart();
         total = 0;
+	   jsonprodlist=new JSONObject();		
+        for(CartItem c : cart){		
+            total+=c.getCartquantity()*c.getProduct().getPrice();		
+            try {		
+                	jsonprodlist.put(String.valueOf(c.getProduct().getProduct_id()),c.getCartquantity());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -120,7 +128,7 @@ public class ViewCartActivity extends AppCompatActivity {
         /*for(CartItem c : shoppingCart.getCart()){
             cart.add(c);
         }
-
+Log.d(TAG, "String="+jsonprodlist.toString());
         for(CartItem c : cart){
             Log.d(TAG,String.valueOf(c.getCartItem().getProduct_name()));
         }*/
